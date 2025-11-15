@@ -194,12 +194,12 @@ Replace the placeholder in `Assets.xcassets/AppIcon.appiconset/` with your app i
 
 ## Performance Targets
 
-| Metric | Target |
-|--------|--------|
+| Metric         | Target |
+| -------------- | ------ |
 | Timer accuracy | ± 10ms |
-| Audio latency | < 30ms |
-| App launch | < 1.5s |
-| Memory usage | < 30MB |
+| Audio latency  | < 30ms |
+| App launch     | < 1.5s |
+| Memory usage   | < 30MB |
 
 ## License
 

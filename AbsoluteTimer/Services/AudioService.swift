@@ -7,11 +7,15 @@
 
 import AVFoundation
 import Foundation
+import Combine
 
 class AudioService: ObservableObject {
+    let objectWillChange = ObservableObjectPublisher()
+    
     private var audioPlayers: [String: AVAudioPlayer] = [:]
     
     init() {
+        // All stored properties are initialized above; safe to use self now
         setupAudioSession()
         loadSounds()
     }

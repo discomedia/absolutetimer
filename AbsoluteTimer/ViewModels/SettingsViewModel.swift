@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 class SettingsViewModel: ObservableObject {
     @Published var soundEnabled: Bool = true

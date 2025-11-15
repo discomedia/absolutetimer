@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 class ProfilesViewModel: ObservableObject {
     @Published var profiles: [TimerProfile] = []
@@ -56,3 +57,4 @@ class ProfilesViewModel: ObservableObject {
         )
     }
 }
+

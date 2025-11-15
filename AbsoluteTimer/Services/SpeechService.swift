@@ -7,8 +7,12 @@
 
 import AVFoundation
 import Foundation
+import Combine
 
 class SpeechService: ObservableObject {
+    let objectWillChange = ObservableObjectPublisher()
+    
+    
     private let synthesizer = AVSpeechSynthesizer()
     
     func announce(_ text: String) {

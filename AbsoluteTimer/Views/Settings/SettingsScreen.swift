@@ -16,19 +16,19 @@ struct SettingsScreen: View {
             Form {
                 Section("Audio & Haptics") {
                     Toggle("Sound Effects", isOn: $viewModel.soundEnabled)
-                        .onChange(of: viewModel.soundEnabled) { _ in
+                        .onChange(of: viewModel.soundEnabled) { oldValue, newValue in
                             viewModel.saveSettings()
                             Haptics.shared.light()
                         }
                     
                     Toggle("Voice Announcements", isOn: $viewModel.speechEnabled)
-                        .onChange(of: viewModel.speechEnabled) { _ in
+                        .onChange(of: viewModel.speechEnabled) { oldValue, newValue in
                             viewModel.saveSettings()
                             Haptics.shared.light()
                         }
                     
                     Toggle("Haptic Feedback", isOn: $viewModel.hapticsEnabled)
-                        .onChange(of: viewModel.hapticsEnabled) { _ in
+                        .onChange(of: viewModel.hapticsEnabled) { oldValue, newValue in
                             viewModel.saveSettings()
                             if viewModel.hapticsEnabled {
                                 Haptics.shared.light()
@@ -73,3 +73,4 @@ struct SettingsScreen: View {
 #Preview {
     SettingsScreen()
 }
+
