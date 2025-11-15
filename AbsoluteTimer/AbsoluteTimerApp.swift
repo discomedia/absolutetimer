@@ -9,9 +9,17 @@ import SwiftUI
 
 @main
 struct AbsoluteTimerApp: App {
+    @StateObject private var profileStorage = ProfileStorage()
+    @StateObject private var audioService = AudioService()
+    @StateObject private var speechService = SpeechService()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(profileStorage)
+                .environmentObject(audioService)
+                .environmentObject(speechService)
+                .preferredColorScheme(.dark)
         }
     }
 }

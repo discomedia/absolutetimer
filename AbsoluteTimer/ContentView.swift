@@ -8,17 +8,53 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var profileStorage: ProfileStorage
+    @EnvironmentObject var audioService: AudioService
+    @EnvironmentObject var speechService: SpeechService
+    
+    @State private var showingSettings = false
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        ZStack(alignment: .topTrailing) {
+            if let selectedProfile = profileStorage.loadSelectedProfile() {
+                TimerScreen(
+                    viewModel: TimerViewModel(
+                        profile: selectedProfile,
+                        audioService: audioService,
+                        speechService: speechService
+                    )
+                )
+            } else {
+                // Fallback if no profile is selected
+                TimerScreen(
+                    viewModel: TimerViewModel(
+                        profile: DefaultProfiles.profiles[0],
+                        audioService: audioService,
+                        speechService: speechService
+                    )
+                )
+            }
+            
+            // Settings button overlay
+            Button(action: {
+                Haptics.shared.light()
+                showingSettings = true
+            }) {
+                Image(systemName: "gearshape.fill")
+                    .font(.title2)
+                    .foregroundColor(.white.opacity(0.7))
+                    .padding()
+            }
+            .sheet(isPresented: $showingSettings) {
+                SettingsScreen()
+            }
         }
-        .padding()
     }
 }
 
 #Preview {
     ContentView()
+        .environmentObject(ProfileStorage())
+        .environmentObject(AudioService())
+        .environmentObject(SpeechService())
 }

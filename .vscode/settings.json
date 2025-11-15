@@ -1,0 +1,14 @@
+{
+  "swift.formatting.provider": "swift-format",
+  "editor.formatOnSave": true,
+  "swift.suppressNonProjectDiagnostics": false,
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/xcuserdata": true,
+    "**/.build": true,
+    "DerivedData": true
+  },
+  "[swift]": {
+    "editor.defaultFormatter": "swiftlang.swift-vscode"
+  }
+}
