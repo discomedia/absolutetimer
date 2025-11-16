@@ -13,6 +13,7 @@ struct TimerState {
     var isActive: Bool = false
     var isRoundActive: Bool = true
     var isCompleted: Bool = false
+    var hasStarted: Bool = false
     
     mutating func reset(roundDuration: Int) {
         currentRound = 1
@@ -20,5 +21,6 @@ struct TimerState {
         isActive = false
         isRoundActive = true
         isCompleted = false
+        hasStarted = false
     }
 }

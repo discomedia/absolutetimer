@@ -18,6 +18,7 @@ class TimerViewModel: ObservableObject {
     private let speechService: SpeechService
     
     private var warningPlayed = false
+    private var subsecondAccumulator: Double = 0 // accumulates ~0.1s ticks until 1.0s
     
     init(profile: TimerProfile, audioService: AudioService, speechService: SpeechService) {
         self.currentProfile = profile
@@ -32,6 +33,7 @@ class TimerViewModel: ObservableObject {
     }
     
     func start() {
+        state.hasStarted = true
         state.isActive = true
         UIApplication.shared.isIdleTimerDisabled = true
         
@@ -54,6 +56,7 @@ class TimerViewModel: ObservableObject {
         stopTimer()
         state.reset(roundDuration: currentProfile.roundDuration)
         warningPlayed = false
+        subsecondAccumulator = 0
         UIApplication.shared.isIdleTimerDisabled = false
     }
     
@@ -72,18 +75,27 @@ class TimerViewModel: ObservableObject {
     
     private func tick() {
         guard state.isActive else { return }
-        
-        state.timeRemaining -= 1
-        
-        // Warning at 10 seconds
-        if state.isRoundActive && state.timeRemaining == 10 && !warningPlayed {
-            audioService.playWarning()
-            Haptics.shared.warning()
-            warningPlayed = true
-        }
-        
-        if state.timeRemaining <= 0 {
-            handleTimeEnd()
+
+        // Accumulate sub-second ticks (~0.1s per tick)
+        let delta: Double = 0.1
+        subsecondAccumulator += delta
+
+        // Process whole seconds only
+        while subsecondAccumulator >= 1.0 {
+            subsecondAccumulator -= 1.0
+            state.timeRemaining -= 1
+
+            // Warning at 10 seconds remaining (only once)
+            if state.isRoundActive && state.timeRemaining == 10 && !warningPlayed {
+                audioService.playWarning()
+                Haptics.shared.warning()
+                warningPlayed = true
+            }
+
+            if state.timeRemaining <= 0 {
+                handleTimeEnd()
+                break
+            }
         }
     }
     
@@ -97,6 +109,7 @@ class TimerViewModel: ObservableObject {
                 // Move to break
                 state.isRoundActive = false
                 state.timeRemaining = currentProfile.breakDuration
+                subsecondAccumulator = 0
                 warningPlayed = false
                 
                 if currentProfile.breakDuration > 0 {
@@ -117,6 +130,7 @@ class TimerViewModel: ObservableObject {
             state.currentRound += 1
             state.isRoundActive = true
             state.timeRemaining = currentProfile.roundDuration
+            subsecondAccumulator = 0
             warningPlayed = false
             
             speechService.announceRound(state.currentRound, isFinal: state.currentRound == currentProfile.totalRounds)
@@ -132,3 +146,4 @@ class TimerViewModel: ObservableObject {
         stopTimer()
     }
 }
+

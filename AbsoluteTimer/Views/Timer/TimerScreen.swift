@@ -15,7 +15,8 @@ struct TimerScreen: View {
         ZStack {
             TimerBackground(
                 isActive: viewModel.state.isActive,
-                isRoundActive: viewModel.state.isRoundActive
+                isRoundActive: viewModel.state.isRoundActive,
+                isPaused: !viewModel.state.isActive && viewModel.state.hasStarted && !viewModel.state.isCompleted
             )
             
             VStack(spacing: 40) {
@@ -38,8 +39,9 @@ struct TimerScreen: View {
                     .background(Color.white.opacity(0.2))
                     .cornerRadius(20)
                 }
-                .disabled(viewModel.state.isActive)
-                .opacity(viewModel.state.isActive ? 0.5 : 1.0)
+                .disabled(viewModel.state.hasStarted)
+                .opacity(viewModel.state.hasStarted ? 0.0 : 1.0)
+                .animation(.easeInOut(duration: 0.2), value: viewModel.state.hasStarted)
                 
                 // Timer display
                 TimerDisplay(

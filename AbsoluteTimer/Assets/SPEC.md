@@ -113,13 +113,14 @@ code .
 	•	Optional: @AppStorage and @SceneStorage
 
 2.3 Audio
-	•	AVAudioPlayer for WAV/MP3 sounds (bell, warning beep)
-	•	AVSpeechSynthesizer for round announcements
-	•	Background audio supported
+	•	AVSpeechSynthesizer for all announcements and most cues (system voices)
+	•	System haptics via UIImpactFeedbackGenerator/CoreHaptics for tactile cues
+	•	Optional: AudioServicesPlaySystemSound for brief system-provided tones (no bundled files)
 
 2.4 Haptics
 	•	UIImpactFeedbackGenerator
 	•	Optional: CoreHaptics for rhythmic custom patterns
+	•	Prefer pairing haptics with TTS for critical cues
 
 ⸻
 
@@ -156,8 +157,6 @@ AbsoluteTimer/
 │   ├── TimeFormatter.swift
 │   └── DefaultProfiles.swift
 └── Assets/
-    ├── bell.wav
-    ├── warning.wav
     └── AppIcon.appiconset
 
 
@@ -195,13 +194,15 @@ struct TimerState {
 
 Background Color Logic
 	•	Idle: Black
-	•	Round: Green (#22c55e)
-	•	Break: Red (#dc2626)
+	•	Round (running): Green (#22c55e)
+	•	Break (running): Red (#dc2626)
+	•	Paused (during round or break): Yellow (#f59e0b)
 
 UI Elements
 	•	Large MM:SS display
 	•	“Round X of Y”
 	•	Start / Pause / Resume / Reset buttons
+	•	Profile selector is hidden once the timer has started and remains hidden while running, paused, and after completion; it only reappears after Reset
 	•	Background color matched to current state
 	•	Screen stays awake during timer
 
@@ -211,6 +212,7 @@ Timer Behavior
 	•	After final round: completion mode + haptic
 	•	Audio feedback throughout
 	•	Supports app backgrounding
+	•	When paused, background turns yellow and the profile selector remains hidden until Reset
 
 ⸻
 
@@ -249,29 +251,54 @@ let defaultProfiles: [TimerProfile] = [
 	•	Validation
 	•	Haptic feedback on save
 
+6.5 Migration Notes (No External Audio Files)
+- Remove any references to bell.wav and warning.wav in code and assets.
+- Update AudioService to use AVSpeechSynthesizer and/or AudioServicesPlaySystemSound.
+- Ensure graceful degradation to TTS-only if system tones are unavailable.
+- QA: Verify no runtime log mentions missing sound files; verify voice selection fallback works even if voice enumeration fails.
+
+
 ⸻
 
-7. Audio System Specification
+7. Audio & Voice System Specification
 
-7.1 Sound Effects
-	•	Round start bell
-	•	Round end bell
-	•	Break tone
-	•	Warning beep 10 seconds before round ends
+7.1 Guiding Principle
+- Use only system-provided capabilities. Do not bundle external audio assets (no .wav/.mp3 in the app bundle).
+- Prefer AVSpeechSynthesizer for all voice announcements and short cues where feasible.
+- Where a non-voice cue is desired, use system-provided haptics and system sound services rather than custom files.
 
-7.2 Text-to-Speech
+7.2 Sound Effects (No Bundled Files)
+- Round start cue: Use a system sound (AudioServicesPlaySystemSound with a documented system sound ID) or a short TTS phoneme cue (e.g., "ding") with a distinct voice/phrase.
+- Round end cue: Same approach as round start.
+- Break cue: Use a different system sound or a spoken word (e.g., "Break") via TTS.
+- Warning cue (e.g., 10s before end): Use haptics and/or a brief TTS phrase (e.g., "Ten seconds").
 
-Uses AVSpeechSynthesizer
+Implementation Notes:
+- Prefer haptic + TTS combinations to ensure accessibility and reliability.
+- Avoid AVAudioPlayer for file-backed playback; no reliance on bundled audio assets.
+- If system sound IDs are used, ensure they are available on iOS and gracefully degrade to TTS-only if unavailable.
 
-Announcements:
-	•	“Round X”
-	•	“Final Round”
-	•	“Break”
-	•	Optional: “Time”
+7.3 Text-to-Speech (System Voices Only)
+- Use AVSpeechSynthesizer exclusively for announcements.
+- Select from system voices (AVSpeechSynthesisVoice.speechVoices()). Do not download or bundle custom voices.
+- Provide a fallback strategy if voice enumeration fails:
+  - Use AVSpeechSynthesisVoice(language: Locale.current.identifier) if available.
+  - Else fall back to the default voice (nil voice).
+- Announcements:
+  - "Round X"
+  - "Final Round"
+  - "Break"
+  - Optional: "Time"
 
-7.3 Background Audio
-	•	Enable Audio background mode
-	•	App continues timing when locked
+7.4 Background Audio
+- Enable Audio background mode.
+- Ensure TTS continues in background where appropriate.
+- Timer continues when device is locked.
+
+7.5 Error Handling & Diagnostics
+- If voice enumeration throws decoding errors, log once per session and switch to default voice without crashing.
+- If system sound playback is unavailable, automatically switch to TTS-only cues + haptics.
+- Avoid references to missing files; there should be no lookups for bell.wav or warning.wav.
 
 ⸻
 
@@ -283,6 +310,7 @@ Announcements:
 	•	Screen-wake disabled during sessions
 	•	Control Center audio handling
 	•	Volume button integration (optional)
+	•	No bundled audio assets; relies on system voices, haptics, and system sounds
 
 ⸻
 
@@ -319,7 +347,7 @@ Steps handled in Xcode:
 
 Metric	Target
 Timer accuracy	± 10ms
-Audio latency	< 30ms
+Audio latency	< 30ms (Measured using TTS start latency and/or system sound dispatch; no file I/O)
 App launch	< 1.5s
 Memory usage	< 30MB
 Battery	Minimal drain with background audio
@@ -368,3 +396,6 @@ Phase 5 (Week 7): Deployment
 	•	Stable in background
 	•	Clean SwiftUI architecture
 	•	4.5+ App Store rating target
+
+
+

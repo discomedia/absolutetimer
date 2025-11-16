@@ -8,18 +8,19 @@
 import AVFoundation
 import Foundation
 import Combine
+import AudioToolbox
 
-class AudioService: ObservableObject {
+/// AudioService provides non-verbal cues using system-provided capabilities only.
+/// - No bundled audio files are used.
+/// - Prefers system sounds when available; otherwise, falls back to haptics.
+final class AudioService: ObservableObject {
     let objectWillChange = ObservableObjectPublisher()
-    
-    private var audioPlayers: [String: AVAudioPlayer] = [:]
-    
+
+    /// Configure audio session for playback/mix to allow TTS + system sounds while respecting other audio.
     init() {
-        // All stored properties are initialized above; safe to use self now
         setupAudioSession()
-        loadSounds()
     }
-    
+
     private func setupAudioSession() {
         do {
             let audioSession = AVAudioSession.sharedInstance()
@@ -29,36 +30,24 @@ class AudioService: ObservableObject {
             print("Failed to set up audio session: \(error)")
         }
     }
-    
-    private func loadSounds() {
-        loadSound(named: "bell", withExtension: "wav")
-        loadSound(named: "warning", withExtension: "wav")
+
+    // MARK: - System Cues
+
+    /// Attempts to play a system sound by ID. If unavailable, does nothing (TimerViewModel may additionally trigger haptics).
+    private func playSystemSound(id: SystemSoundID) {
+        AudioServicesPlaySystemSound(id)
     }
-    
-    private func loadSound(named name: String, withExtension ext: String) {
-        guard let url = Bundle.main.url(forResource: name, withExtension: ext) else {
-            print("Could not find sound file: \(name).\(ext)")
-            return
-        }
-        
-        do {
-            let player = try AVAudioPlayer(contentsOf: url)
-            player.prepareToPlay()
-            audioPlayers[name] = player
-        } catch {
-            print("Could not load sound file \(name): \(error)")
-        }
-    }
-    
-    func playSound(_ soundName: String) {
-        audioPlayers[soundName]?.play()
-    }
-    
+
+    /// Round/break bell-like cue. Maps to a standard system sound.
     func playBell() {
-        playSound("bell")
+        // 1007 is a commonly available tri-tone style; adjust if needed.
+        // Note: System sound availability can vary; this is best-effort.
+        playSystemSound(id: 1007)
     }
-    
+
+    /// Warning cue before round end. Uses a different short tone.
     func playWarning() {
-        playSound("warning")
+        // 1057 is a short alert tone; choose a distinct ID from the bell.
+        playSystemSound(id: 1057)
     }
 }
