@@ -1,45 +1,50 @@
-Absolute Timer — Native Swift (SwiftUI) Application Specification
+# Absolute Timer — Native Swift (SwiftUI) Application Specification
 
 Absolute Timer is a native iOS application for boxing, MMA, and HIIT training.
 It provides customizable round timers, break timers, audio cues, text-to-speech announcements, and profile management.
 The goal is simplicity, reliability, and ultra-low latency audio cues while maintaining a clean SwiftUI codebase.
 
 This specification defines:
-	•	All features
-	•	Architecture
-	•	File structure
-	•	Data models
-	•	Audio and background behavior
-	•	VSCode-based workflow
-	•	Build and deployment steps
-	•	Performance targets
 
-⸻
+- All features
+- Architecture
+- File structure
+- Data models
+- Audio and background behavior
+- VSCode-based workflow
+- Build and deployment steps
+- Performance targets
 
-1. Development Workflow (VSCode-First)
+---
 
-1.1 Work in VSCode
+## 1. Development Workflow (VSCode-First)
+
+### 1.1 Work in VSCode
 
 You will write all Swift code inside VSCode, not Xcode.
 
-Required VSCode Extensions:
-	•	Swift (official Swift Server Workgroup)
-	•	SourceKit-LSP (built into Swift extension)
-	•	Swift-Format
-	•	Error Lens (optional)
-	•	GitLens (optional)
+**Required VSCode extensions:**
 
-Recommended settings (settings.json):
+- Swift (official Swift Server Workgroup)
+- SourceKit-LSP (built into Swift extension)
+- Swift-Format
+- Error Lens (optional)
+- GitLens (optional)
 
+**Recommended settings (`.vscode/settings.json`):**
+
+```json
 {
   "swift.formatting.provider": "swift-format",
   "editor.defaultFormatter": "swift.swift-lang",
   "editor.formatOnSave": true,
   "swift.suppressNonProjectDiagnostics": false
 }
+```
 
-Optional VSCode build task (.vscode/tasks.json):
+**Optional VSCode build task (`.vscode/tasks.json`):**
 
+```json
 {
   "version": "2.0.0",
   "tasks": [
@@ -51,80 +56,87 @@ Optional VSCode build task (.vscode/tasks.json):
     }
   ]
 }
+```
 
-You can now press Cmd+Shift+B to build via VSCode.
+You can now press `Cmd+Shift+B` to build via VSCode.
 
-⸻
-
-1.2 Use Xcode Only When Necessary
+### 1.2 Use Xcode Only When Necessary
 
 Xcode is required only for:
-	•	Creating the initial project
-	•	Running on simulator or device
-	•	Managing signing & provisioning
-	•	Adding entitlements (e.g., Background Audio)
-	•	Archiving & uploading to App Store
+
+- Creating the initial project
+- Running on simulator or device
+- Managing signing & provisioning
+- Adding entitlements (e.g., Background Audio)
+- Archiving & uploading to App Store
 
 Run Xcode from the terminal:
 
+```bash
 xed .
+```
 
-
-⸻
-
-1.3 Command-Line Builds
+### 1.3 Command-Line Builds
 
 Build for simulator:
 
+```bash
 xcodebuild -scheme AbsoluteTimer -destination 'platform=iOS Simulator,name=iPhone 15'
+```
 
 Run tests:
 
+```bash
 xcodebuild test -scheme AbsoluteTimer
+```
 
+### 1.4 Creating a New App (initial setup)
 
-⸻
+1. Open Xcode → “New Project”.
+2. Template: iOS App.
+3. Interface: SwiftUI.
+4. Save project.
+5. Close Xcode.
+6. Open project in VSCode:
 
-1.4 Creating a New App (initial setup)
-	1.	Open Xcode → “New Project”
-	2.	Template: iOS App
-	3.	Interface: SwiftUI
-	4.	Save project
-	5.	Close Xcode
-	6.	Open project in VSCode:
+   ```bash
+   code .
+   ```
 
-code .
+---
 
+## 2. Tech Stack
 
-⸻
+### 2.1 Language & Framework
 
-2. Tech Stack
+- Swift 6
+- SwiftUI for UI
+- Combine for reactive timer state
+- Foundation for data models and persistence
 
-2.1 Language & Framework
-	•	Swift 6
-	•	SwiftUI for UI
-	•	Combine for reactive timer state
-	•	Foundation for data models and persistence
+### 2.2 Local Storage
 
-2.2 Local Storage
-	•	Default profiles embedded in bundle
-	•	User-created profiles stored as JSON in app documents
-	•	Quick settings stored in UserDefaults
-	•	Optional: @AppStorage and @SceneStorage
+- Default profiles embedded in bundle
+- User-created profiles stored as JSON in app documents
+- Quick settings stored in `UserDefaults`
+- Optional: `@AppStorage` and `@SceneStorage`
 
-2.3 Audio
-	•	AVAudioPlayer for WAV/MP3 sounds (bell, warning beep)
-	•	AVSpeechSynthesizer for round announcements
-	•	Background audio supported
+### 2.3 Audio
 
-2.4 Haptics
-	•	UIImpactFeedbackGenerator
-	•	Optional: CoreHaptics for rhythmic custom patterns
+- `AVAudioPlayer` for WAV/MP3 sounds (bell, warning beep)
+- `AVSpeechSynthesizer` for round announcements
+- Background audio supported
 
-⸻
+### 2.4 Haptics
 
-3. Project Structure
+- `UIImpactFeedbackGenerator`
+- Optional: `CoreHaptics` for rhythmic custom patterns
 
+---
+
+## 3. Project Structure
+
+```text
 AbsoluteTimer/
 ├── AbsoluteTimerApp.swift          # App entry
 ├── Models/
@@ -159,14 +171,15 @@ AbsoluteTimer/
     ├── bell.wav
     ├── warning.wav
     └── AppIcon.appiconset
+```
 
+---
 
-⸻
+## 4. Data Models
 
-4. Data Models
+### 4.1 `TimerProfile`
 
-4.1 TimerProfile
-
+```swift
 struct TimerProfile: Identifiable, Codable {
     let id: UUID
     var name: String
@@ -175,196 +188,263 @@ struct TimerProfile: Identifiable, Codable {
     var totalRounds: Int
     var isDefault: Bool
 }
+```
 
-4.2 TimerState
+### 4.2 `TimerState`
 
+```swift
 struct TimerState {
     var currentRound: Int = 1
     var timeRemaining: Int = 0
     var isActive: Bool = false
     var isRoundActive: Bool = true
     var isCompleted: Bool = false
+    var hasStarted: Bool = false
 }
+```
 
+---
 
-⸻
+## 5. UI Specification
 
-5. UI Specification
+### 5.1 Main Timer Screen
 
-5.1 Main Timer Screen
+**Background color logic**
 
-Background Color Logic
-	•	Idle: Black
-	•	Round: Green (#22c55e)
-	•	Break: Red (#dc2626)
+The `TimerBackground` view derives its color from the timer state:
 
-UI Elements
-	•	Large MM:SS display
-	•	“Round X of Y”
-	•	Start / Pause / Resume / Reset buttons
-	•	Background color matched to current state
-	•	Screen stays awake during timer
+- Idle (before first start, or after reset/completion): black (`#000000`).
+- Active round running (`isActive == true`, `isRoundActive == true`): green (`#22c55e` approximate).
+- Break running (`isActive == true`, `isRoundActive == false`): red (`#dc2626` approximate).
+- Paused after starting (`isActive == false`, `hasStarted == true`, `isCompleted == false`): yellow (`#f59e0b`).
 
-Timer Behavior
-	•	High-precision 0.1s tick using Timer.publish
-	•	Auto switch between Round → Break
-	•	After final round: completion mode + haptic
-	•	Audio feedback throughout
-	•	Supports app backgrounding
+Color changes are animated with an ease-in-out transition.
 
-⸻
+**UI elements**
 
-6. Profiles
+- Large `MM:SS` display (`TimerDisplay`) in white, monospaced digits.
+- “Round X of Y” label below the timer.
+- Profile selector pill showing the current profile name and a chevron:
+  - Visible and enabled only before the timer has ever started (`hasStarted == false`).
+  - Once the timer has started (including during pauses and breaks), the selector is disabled and fades out to opacity 0.
+  - The selector becomes visible again only after a full reset.
+- Start / Pause / Reset controls (`TimerControls`):
+  - Start button is shown when the timer is not active and not completed; this button is used both for the initial start and to resume after a pause (there is no separate “Resume” label in the implemented UI).
+  - Pause button is shown only while the timer is active.
+  - Reset button is always visible; after completion, only Reset remains.
+- Background color matches the current timer state as described above.
+- Screen stays awake only while the timer is actively running (`isActive == true`); when paused or idle/completed, auto-lock is re-enabled.
 
-6.1 Default Profiles
+**Timer behavior**
 
+- High-precision ~0.1 s tick using `Timer.publish(every:on:in:)` with Combine.
+- Automatic transitions:
+  - Round → Break when a round ends (if `breakDuration > 0`).
+  - If `breakDuration == 0`, immediately transition to the next round.
+  - Break → next round when the break ends.
+- Warning beep + haptic at 10 seconds remaining in each active round (only once per round).
+- After final round:
+  - Play bell and trigger completion haptic.
+  - Announce “Time” via speech.
+  - Mark timer as completed (`isCompleted = true`) and stop (`isActive = false`); background returns to idle (black).
+- Supports running while the app is in the background when background audio is configured in Xcode.
+
+---
+
+## 6. Profiles
+
+### 6.1 Default Profiles
+
+```swift
 let defaultProfiles: [TimerProfile] = [
-    .init(id: UUID(), name: "Standard Boxing",
-          roundDuration: 180, breakDuration: 60, totalRounds: 12, isDefault: true),
-    .init(id: UUID(), name: "Standard MMA",
-          roundDuration: 300, breakDuration: 60, totalRounds: 5, isDefault: true),
-    .init(id: UUID(), name: "EMOM",
-          roundDuration: 60, breakDuration: 0, totalRounds: 20, isDefault: true),
-    .init(id: UUID(), name: "E2MOM",
-          roundDuration: 120, breakDuration: 0, totalRounds: 10, isDefault: true)
+    .init(
+        id: UUID(),
+        name: "Standard Boxing",
+        roundDuration: 180,
+        breakDuration: 60,
+        totalRounds: 12,
+        isDefault: true
+    ),
+    .init(
+        id: UUID(),
+        name: "Standard MMA",
+        roundDuration: 300,
+        breakDuration: 60,
+        totalRounds: 5,
+        isDefault: true
+    ),
+    .init(
+        id: UUID(),
+        name: "EMOM",
+        roundDuration: 60,
+        breakDuration: 0,
+        totalRounds: 20,
+        isDefault: true
+    ),
+    .init(
+        id: UUID(),
+        name: "E2MOM",
+        roundDuration: 120,
+        breakDuration: 0,
+        totalRounds: 10,
+        isDefault: true
+    )
 ]
+```
 
-6.2 Profile Selector
-	•	SwiftUI Picker
-	•	Defaults on top
-	•	User-created profiles below
-	•	Last selected profile stored in UserDefaults
+### 6.2 Profile Selector
 
-6.3 Profiles Screen
-	•	List of all profiles
-	•	Swipe to delete (custom profiles only)
-	•	“Add New Profile” button
+- SwiftUI `Picker` presented as a sheet (`ProfileSelector`).
+- Default profiles appear at the top.
+- User-created profiles appear below defaults.
+- Last selected profile is stored in `UserDefaults`.
 
-6.4 Profile Editor
-	•	Name
-	•	Round slider
-	•	Break slider
-	•	Total rounds slider
-	•	Preset values (30s, 45s, 1m, etc.)
-	•	Validation
-	•	Haptic feedback on save
+### 6.3 Profiles Screen
 
-⸻
+- List of all profiles.
+- Swipe to delete (custom profiles only).
+- “Add New Profile” button.
 
-7. Audio System Specification
+### 6.4 Profile Editor
 
-7.1 Sound Effects
-	•	Round start bell
-	•	Round end bell
-	•	Break tone
-	•	Warning beep 10 seconds before round ends
+- Name field.
+- Round duration slider.
+- Break duration slider.
+- Total rounds slider.
+- Preset values (30s, 45s, 1m, etc.).
+- Validation on save.
+- Haptic feedback on successful save.
 
-7.2 Text-to-Speech
+---
 
-Uses AVSpeechSynthesizer
+## 7. Audio System Specification
+
+### 7.1 Sound Effects
+
+- Round start bell.
+- Round end bell.
+- Break tone.
+- Warning beep 10 seconds before round ends.
+
+### 7.2 Text-to-Speech
+
+Uses `AVSpeechSynthesizer`.
 
 Announcements:
-	•	“Round X”
-	•	“Final Round”
-	•	“Break”
-	•	Optional: “Time”
 
-7.3 Background Audio
-	•	Enable Audio background mode
-	•	App continues timing when locked
+- “Round X”.
+- “Final Round”.
+- “Break”.
+- “Time” on completion (optional toggle in settings).
 
-⸻
+### 7.3 Background Audio
 
-8. Platform Features (iOS)
-	•	Background audio
-	•	Haptics
-	•	Dark Mode support
-	•	Portrait orientation lock
-	•	Screen-wake disabled during sessions
-	•	Control Center audio handling
-	•	Volume button integration (optional)
+- Enable Audio background mode in Xcode capabilities.
+- App continues timing and audio cues when the device is locked (subject to iOS behavior).
 
-⸻
+---
 
-9. Permissions
-	•	No microphone permission needed
-	•	Background Modes → Audio
-	•	Disable Auto-Lock when timer is active
+## 8. Platform Features (iOS)
 
-⸻
+- Background audio.
+- Haptics.
+- Dark Mode support.
+- Portrait orientation lock.
+- Screen-wake disabled during active sessions (timer running).
+- Control Center audio handling.
+- Volume button integration (optional).
 
-10. Deployment
+---
 
-10.1 Development Environment
+## 9. Permissions
+
+- No microphone permission needed.
+- Background Modes → Audio.
+- Disable Auto-Lock when timer is active.
+
+---
+
+## 10. Deployment
+
+### 10.1 Development Environment
 
 Use VSCode for everything except device/simulator builds.
 
-Building and Running:
+Building and running:
 
+```bash
 xed .   # opens Xcode
+```
 
-Then press ▶️ Run.
+Then press “Run” in Xcode.
 
-10.2 App Store Submission
+### 10.2 App Store Submission
 
 Steps handled in Xcode:
-	1.	Archive build (Product → Archive)
-	2.	Distribute via App Store Connect
-	3.	TestFlight testing
-	4.	App Store review (1–7 days)
 
-⸻
+1. Archive build (Product → Archive).
+2. Distribute via App Store Connect.
+3. TestFlight testing.
+4. App Store review (typically 1–7 days).
 
-11. Performance Metrics
+---
 
-Metric	Target
-Timer accuracy	± 10ms
-Audio latency	< 30ms
-App launch	< 1.5s
-Memory usage	< 30MB
-Battery	Minimal drain with background audio
+## 11. Performance Metrics
 
+| Metric          | Target                              |
+|-----------------|--------------------------------------|
+| Timer accuracy  | ± 10 ms                              |
+| Audio latency   | < 30 ms                              |
+| App launch      | < 1.5 s                              |
+| Memory usage    | < 30 MB                              |
+| Battery         | Minimal drain with background audio |
 
-⸻
+---
 
-12. Development Timeline
+## 12. Development Timeline
 
-Phase 1 (Weeks 1–2): Core Timer
-	•	TimerViewModel
-	•	TimerScreen
-	•	Background colors
-	•	Navigation
-	•	Default profiles
+**Phase 1 (Weeks 1–2): Core Timer**
 
-Phase 2 (Week 3): Audio
-	•	Bell sounds
-	•	Warning beeps
-	•	TTS announcements
-	•	Background audio
+- `TimerViewModel`
+- `TimerScreen`
+- Background colors
+- Navigation
+- Default profiles
 
-Phase 3 (Week 4): Profiles
-	•	Editor screen
-	•	Profile storage
-	•	Sliders and validation
-	•	JSON persistence
+**Phase 2 (Week 3): Audio**
 
-Phase 4 (Weeks 5–6): Polish
-	•	Haptics
-	•	Dark Mode audit
-	•	Screen awake
-	•	Settings screen
+- Bell sounds
+- Warning beeps
+- TTS announcements
+- Background audio
 
-Phase 5 (Week 7): Deployment
-	•	TestFlight
-	•	Bug fixes
-	•	App Store submission
+**Phase 3 (Week 4): Profiles**
 
-⸻
+- Editor screen
+- Profile storage
+- Sliders and validation
+- JSON persistence
 
-13. Success Criteria
-	•	Start workout in a single tap
-	•	Reliable audio cues
-	•	Zero timing drift
-	•	Stable in background
-	•	Clean SwiftUI architecture
-	•	4.5+ App Store rating target
+**Phase 4 (Weeks 5–6): Polish**
+
+- Haptics
+- Dark Mode audit
+- Screen awake behavior
+- Settings screen
+
+**Phase 5 (Week 7): Deployment**
+
+- TestFlight
+- Bug fixes
+- App Store submission
+
+---
+
+## 13. Success Criteria
+
+- Start workout in a single tap.
+- Reliable audio cues.
+- Zero timing drift.
+- Stable in background.
+- Clean SwiftUI architecture.
+- 4.5+ App Store rating target.
