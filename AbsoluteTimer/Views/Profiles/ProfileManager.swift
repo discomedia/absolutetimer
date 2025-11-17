@@ -11,7 +11,6 @@ struct ProfileManager: View {
     @StateObject private var storage = ProfileStorage()
     @Environment(\.dismiss) private var dismiss
     
-    @State private var showingEditor = false
     @State private var profileToEdit: TimerProfile?
     
     var body: some View {
@@ -23,7 +22,6 @@ struct ProfileManager: View {
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 profileToEdit = profile
-                                showingEditor = true
                             }
                     }
                 }
@@ -34,7 +32,6 @@ struct ProfileManager: View {
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 profileToEdit = profile
-                                showingEditor = true
                             }
                     }
                     .onDelete(perform: deleteProfiles)
@@ -59,18 +56,15 @@ struct ProfileManager: View {
                             isDefault: false
                         )
                         profileToEdit = newProfile
-                        showingEditor = true
                     }) {
                         Image(systemName: "plus")
                     }
                 }
             }
-            .sheet(isPresented: $showingEditor) {
-                if let profile = profileToEdit {
-                    ProfileEditor(profile: profile) { updatedProfile in
-                        storage.saveProfile(updatedProfile)
-                        storage.loadProfiles()
-                    }
+            .sheet(item: $profileToEdit) { profile in
+                ProfileEditor(profile: profile) { updatedProfile in
+                    storage.saveProfile(updatedProfile)
+                    storage.loadProfiles()
                 }
             }
         }
