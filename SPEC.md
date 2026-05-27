@@ -10,7 +10,7 @@ This specification defines:
 - Architecture
 - File structure
 - Data models
-- Audio and background behavior
+- Audio behavior
 - VSCode-based workflow
 - Build and deployment steps
 - Performance targets
@@ -123,9 +123,9 @@ xcodebuild test -scheme AbsoluteTimer
 
 ### 2.3 Audio
 
-- `AVAudioPlayer` for WAV/MP3 sounds (bell, warning beep)
+- System sound cues for bell and warning alerts
 - `AVSpeechSynthesizer` for round announcements
-- Background audio supported
+- Screen stays awake while an active timer is running
 
 ### 2.4 Haptics
 
@@ -167,10 +167,7 @@ AbsoluteTimer/
 ├── Utils/
 │   ├── TimeFormatter.swift
 │   └── DefaultProfiles.swift
-└── Assets/
-    ├── bell.wav
-    ├── warning.wav
-    └── AppIcon.appiconset
+└── PrivacyInfo.xcprivacy
 ```
 
 ---
@@ -247,7 +244,7 @@ Color changes are animated with an ease-in-out transition.
   - Play bell and trigger completion haptic.
   - Announce “Time” via speech.
   - Mark timer as completed (`isCompleted = true`) and stop (`isActive = false`); background returns to idle (black).
-- Supports running while the app is in the background when background audio is configured in Xcode.
+- Keeps the screen awake while the timer is actively running. Lock-screen/background timing is not promised for v1.
 
 ---
 
@@ -337,16 +334,16 @@ Announcements:
 - “Break”.
 - “Time” on completion (optional toggle in settings).
 
-### 7.3 Background Audio
+### 7.3 Active Session Behavior
 
-- Enable Audio background mode in Xcode capabilities.
-- App continues timing and audio cues when the device is locked (subject to iOS behavior).
+- Disable Auto-Lock while the timer is actively running.
+- Re-enable Auto-Lock when the timer is paused, reset, or completed.
 
 ---
 
 ## 8. Platform Features (iOS)
 
-- Background audio.
+- System sound cues.
 - Haptics.
 - Dark Mode support.
 - Portrait orientation lock.
@@ -359,7 +356,6 @@ Announcements:
 ## 9. Permissions
 
 - No microphone permission needed.
-- Background Modes → Audio.
 - Disable Auto-Lock when timer is active.
 
 ---
@@ -397,7 +393,7 @@ Steps handled in Xcode:
 | Audio latency   | < 30 ms                              |
 | App launch      | < 1.5 s                              |
 | Memory usage    | < 30 MB                              |
-| Battery         | Minimal drain with background audio |
+| Battery         | Minimal drain during active screen-awake sessions |
 
 ---
 
@@ -416,7 +412,6 @@ Steps handled in Xcode:
 - Bell sounds
 - Warning beeps
 - TTS announcements
-- Background audio
 
 **Phase 3 (Week 4): Profiles**
 

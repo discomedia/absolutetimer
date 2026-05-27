@@ -49,31 +49,24 @@ This document tracks the implementation status of the Absolute Timer project as 
 
 ## ⚠️ Needs Manual Configuration
 
-### Audio Assets
-- ⚠️ **bell.wav** - Must be added manually (see Assets/README.md)
-- ⚠️ **warning.wav** - Must be added manually (see Assets/README.md)
+### App Store Hosting
+- ⚠️ Host `app-store/pages/privacy.html` at `https://discomedia.com.au/absolute-timer/privacy`
+- ⚠️ Host `app-store/pages/support.html` at `https://discomedia.com.au/absolute-timer/support`
 
 ### Xcode Configuration
 The following must be configured in Xcode (cannot be done in VSCode):
 
-1. **Background Audio Capability**
-   - Open project in Xcode: `xed .`
-   - Select AbsoluteTimer target
-   - Go to "Signing & Capabilities"
-   - Add "Background Modes" capability
-   - Enable "Audio, AirPlay, and Picture in Picture"
-
-2. **App Icon**
+1. **App Icon**
    - Replace placeholder in Assets.xcassets/AppIcon.appiconset/
    - Use 1024x1024 PNG for App Store
 
-3. **Signing & Provisioning**
+2. **Signing & Provisioning**
    - Configure development team
    - Set bundle identifier
    - Configure signing certificates
 
-4. **Info.plist** (if needed)
-   - May need to add privacy descriptions if required
+3. **App Store Connect**
+   - Use `app-store/submission.md` for metadata, privacy answers, and review notes
 
 ## 🧪 Testing Checklist
 
@@ -93,7 +86,7 @@ The following must be configured in Xcode (cannot be done in VSCode):
 - [ ] Speech announces "Break"
 - [ ] Speech announces "Time" on completion
 - [ ] Haptics trigger at appropriate times
-- [ ] Audio works in background/locked state
+- [ ] Screen stays awake while timer is active
 
 ### Profile Management
 - [ ] Can select from default profiles
@@ -121,29 +114,22 @@ The following must be configured in Xcode (cannot be done in VSCode):
 
 ## 📋 Next Steps
 
-1. **Add Audio Files**
-   - Find or create bell.wav and warning.wav
-   - Add to Xcode project
-   - Test audio playback
-
-2. **Configure Xcode Project**
-   - Enable Background Audio capability
+1. **Configure Xcode Project**
    - Set up signing
-   - Add app icon
+   - Confirm app icon
 
-3. **Test on Simulator**
+2. **Test on Simulator**
    ```bash
    xed .
    # Then press ▶️ Run
    ```
 
-4. **Test on Device**
-   - Connect iPhone/iPad
+3. **Test on Device**
+   - Connect iPhone
    - Run from Xcode
-   - Test background audio
-   - Test lock screen behavior
+   - Test sound, speech, haptics, and screen-awake behavior
 
-5. **Performance Testing**
+4. **Performance Testing**
    - Verify timer accuracy (± 10ms target)
    - Check audio latency (< 30ms target)
    - Monitor memory usage (< 30MB target)
@@ -186,6 +172,6 @@ All Swift code has been implemented according to SPEC.md specifications. The pro
 - ✅ Comprehensive documentation
 
 The project is ready to build and run. The only remaining tasks are:
-1. Adding the two audio files
-2. Configuring capabilities in Xcode
+1. Hosting the static privacy and support pages
+2. Configuring signing in Xcode
 3. Testing functionality

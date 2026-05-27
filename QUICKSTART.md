@@ -7,20 +7,7 @@ Get your Absolute Timer app running in 5 minutes!
 - macOS with Xcode 15+
 - iOS Simulator or iOS device
 
-## Step 1: Add Audio Files (Optional but Recommended)
-
-Download or create two audio files:
-- `bell.wav` - A bell sound (~1-2 seconds)
-- `warning.wav` - A beep sound (~0.5-1 second)
-
-Quick sources:
-- **freesound.org** - Free sound effects
-- **GarageBand** - Create custom sounds
-- **Online generators** - Search "bell sound generator"
-
-Place them in `AbsoluteTimer/Assets/` folder.
-
-## Step 2: Open in Xcode
+## Step 1: Open in Xcode
 
 ```bash
 cd /Users/danahooshmand/dev/discomedia/absolutetimer
@@ -29,39 +16,19 @@ xed .
 
 Wait for Xcode to open and index the project.
 
-## Step 3: Add Audio Files to Project (if you have them)
-
-In Xcode:
-1. Right-click on "AbsoluteTimer" folder in navigator
-2. Choose "Add Files to AbsoluteTimer..."
-3. Select your `bell.wav` and `warning.wav` files
-4. Make sure "Copy items if needed" is checked
-5. Make sure "AbsoluteTimer" target is selected
-6. Click "Add"
-
-## Step 4: Enable Background Audio
-
-In Xcode:
-1. Select "AbsoluteTimer" project in navigator (top item)
-2. Select "AbsoluteTimer" target
-3. Click "Signing & Capabilities" tab
-4. Click "+ Capability"
-5. Search for and add "Background Modes"
-6. Check the box for "Audio, AirPlay, and Picture in Picture"
-
-## Step 5: Configure Signing
+## Step 2: Configure Signing
 
 In Xcode (Signing & Capabilities tab):
 1. Select your Team from the dropdown
 2. Xcode will automatically manage signing
 
-## Step 6: Choose Destination
+## Step 3: Choose Destination
 
 At the top of Xcode:
 - For Simulator: Click destination dropdown → Choose "iPhone 15" (or any simulator)
-- For Device: Connect your iPhone/iPad → Select it from dropdown
+- For Device: Connect your iPhone → Select it from dropdown
 
-## Step 7: Build & Run
+## Step 4: Build & Run
 
 Press ▶️ (or Cmd+R) to build and run!
 
@@ -76,8 +43,8 @@ Press ▶️ (or Cmd+R) to build and run!
 ### After Pressing Start
 - Background turns green (active round)
 - Timer counts down
-- Bell sound plays (if audio files added)
-- Voice says "Round 1" (if audio files added)
+- System sound cue plays
+- Voice says "Round 1" if Voice Announcements are enabled
 
 ### At 10 Seconds Remaining
 - Warning beep plays
@@ -123,14 +90,13 @@ Press ▶️ (or Cmd+R) to build and run!
 ## Troubleshooting
 
 ### No Sound
-- Check audio files are added to project
 - Check device/simulator volume
 - Check Sound Effects toggle in Settings
 - Ensure Silent mode is off (device only)
 
 ### No Voice Announcements
 - Check Voice Announcements toggle in Settings
-- TTS works even without audio files
+- TTS does not require bundled audio files
 
 ### Build Errors
 - Clean build: Product → Clean Build Folder (Cmd+Shift+K)
@@ -181,16 +147,14 @@ You can continue editing Swift files in VSCode:
 - ✅ Voice announcements work
 - ✅ Haptic feedback triggers
 - ✅ Background colors change (black/green/red)
-- ✅ App works when locked (background audio)
+- ✅ Screen stays awake while the timer is actively running
 
 ## Next Steps
 
 Once basic testing is complete:
-1. Add custom app icon
-2. Test on physical device
-3. Test background behavior with screen locked
-4. Fine-tune audio files
-5. Create custom profiles for your workouts
+1. Test on physical device
+2. Verify App Store privacy/support links
+3. Create custom profiles for your workouts
 
 ## Need Help?
 

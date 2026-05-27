@@ -10,7 +10,10 @@ import SwiftUI
 struct SettingsScreen: View {
     @StateObject private var viewModel = SettingsViewModel()
     @Environment(\.dismiss) private var dismiss
-    
+
+    private let privacyURL = URL(string: "https://discomedia.com.au/absolute-timer/privacy")!
+    private let supportURL = URL(string: "https://discomedia.com.au/absolute-timer/support")!
+
     var body: some View {
         NavigationView {
             Form {
@@ -20,13 +23,13 @@ struct SettingsScreen: View {
                             viewModel.saveSettings()
                             Haptics.shared.light()
                         }
-                    
+
                     Toggle("Voice Announcements", isOn: $viewModel.speechEnabled)
                         .onChange(of: viewModel.speechEnabled) { oldValue, newValue in
                             viewModel.saveSettings()
                             Haptics.shared.light()
                         }
-                    
+
                     Toggle("Haptic Feedback", isOn: $viewModel.hapticsEnabled)
                         .onChange(of: viewModel.hapticsEnabled) { oldValue, newValue in
                             viewModel.saveSettings()
@@ -35,7 +38,7 @@ struct SettingsScreen: View {
                             }
                         }
                 }
-                
+
                 Section("About") {
                     HStack {
                         Text("Version")
@@ -43,18 +46,22 @@ struct SettingsScreen: View {
                         Text("1.0.0")
                             .foregroundColor(.secondary)
                     }
-                    
+
                     HStack {
                         Text("App")
                         Spacer()
                         Text("Absolute Timer")
                             .foregroundColor(.secondary)
                     }
+
+                    Text("Training timer only. Not medical, safety, or coaching advice.")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
                 }
-                
+
                 Section("Support") {
-                    Link("Rate on App Store", destination: URL(string: "https://apps.apple.com")!)
-                    Link("Report an Issue", destination: URL(string: "https://github.com")!)
+                    Link("Support", destination: supportURL)
+                    Link("Privacy Policy", destination: privacyURL)
                 }
             }
             .navigationTitle("Settings")
@@ -73,4 +80,3 @@ struct SettingsScreen: View {
 #Preview {
     SettingsScreen()
 }
-

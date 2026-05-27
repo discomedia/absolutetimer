@@ -120,14 +120,7 @@ State management via:
 
 ## 🔧 Next Steps
 
-### 1. Add Audio Files (Required)
-The app needs two audio files in the Assets folder:
-- `bell.wav` - For round start/end
-- `warning.wav` - For 10-second countdown
-
-See `AbsoluteTimer/Assets/README.md` for details.
-
-### 2. Configure in Xcode (Required)
+### 1. Configure in Xcode (Required)
 Open Xcode and configure:
 
 ```bash
@@ -135,12 +128,11 @@ xed .
 ```
 
 Then:
-1. Enable **Background Modes** capability
-2. Check **Audio, AirPlay, and Picture in Picture**
-3. Set up signing & provisioning
-4. Add app icon (optional)
+1. Set up signing & provisioning
+2. Confirm the app icon
+3. Archive for App Store Connect
 
-### 3. Build & Run
+### 2. Build & Run
 Press ▶️ Run in Xcode to test on simulator or device.
 
 Or from command line:
@@ -175,8 +167,6 @@ xcodebuild -scheme AbsoluteTimer -destination 'platform=iOS Simulator,name=iPhon
 
 All requirements from SPEC.md have been implemented. The project is ready for:
 - Testing on simulator/device
-- Audio asset integration
-- Xcode capability configuration
 - TestFlight beta testing
 - App Store submission
 

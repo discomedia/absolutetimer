@@ -1,0 +1,13 @@
+{
+  "name": "absolute-timer",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "bash scripts/ios-release.sh build",
+    "package": "bash scripts/ios-release.sh package",
+    "ios:archive": "bash scripts/ios-release.sh archive",
+    "ios:upload": "bash scripts/ios-release.sh upload",
+    "ios:release": "bash scripts/ios-release.sh release",
+    "release": "npm run ios:release"
+  }
+}

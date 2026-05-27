@@ -24,7 +24,7 @@ A native iOS application for boxing, MMA, and HIIT training built with SwiftUI. 
   - "Break" during rest periods
   - "Time" when workout completes
 - Haptic feedback for key events
-- Background audio support (continues when screen is locked)
+- Keeps the screen awake while an active timer is running
 
 ### Profiles
 - **4 Default Profiles**:
@@ -79,8 +79,7 @@ AbsoluteTimer/
 ├── Utils/
 │   ├── TimeFormatter.swift         # Time formatting helpers
 │   └── DefaultProfiles.swift       # Built-in profiles
-└── Assets/
-    └── README.md                   # Audio assets documentation
+└── PrivacyInfo.xcprivacy           # App Store privacy manifest
 ```
 
 ## Development Setup
@@ -132,7 +131,6 @@ Then press `Cmd+Shift+B` to build.
 While development is done in VSCode, Xcode is still needed for:
 - Running on simulator or device
 - Managing signing & provisioning
-- Adding entitlements (Background Audio mode)
 - Archiving & uploading to App Store
 
 To open in Xcode:
@@ -140,26 +138,13 @@ To open in Xcode:
 xed .
 ```
 
-## Audio Assets
+## Audio
 
-The app requires two audio files that need to be added to the project:
+The app uses system sound cues for round and warning alerts plus `AVSpeechSynthesizer` for voice announcements. No bundled audio files are required for v1.
 
-1. **bell.wav** - Bell sound for round start/end (~1-2 seconds)
-2. **warning.wav** - Warning beep for 10-second countdown (~0.5-1 second)
+## App Store Assets
 
-See `AbsoluteTimer/Assets/README.md` for detailed instructions on adding audio files.
-
-## Configuration
-
-### Background Audio
-
-To enable background audio (timer continues when screen is locked):
-
-1. Open project in Xcode
-2. Select the AbsoluteTimer target
-3. Go to "Signing & Capabilities" tab
-4. Add "Background Modes" capability
-5. Check "Audio, AirPlay, and Picture in Picture"
+App Store metadata, privacy/support page drafts, and 6.9-inch iPhone screenshots are in `app-store/`.
 
 ### App Icon
 
@@ -181,7 +166,6 @@ Replace the placeholder in `Assets.xcassets/AppIcon.appiconset/` with your app i
 
 ### Timer Implementation
 - Uses `Timer.publish` with 0.1s intervals for high precision
-- Automatically manages background/foreground transitions
 - Prevents screen dimming during active sessions
 
 ## Building for Release
@@ -207,4 +191,4 @@ Copyright © 2025 Dana Hooshmand. All rights reserved.
 
 ## Support
 
-For issues or feature requests, please create an issue on GitHub.
+For issues or feature requests, email support@discomedia.com.au.
