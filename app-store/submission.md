@@ -41,7 +41,7 @@ Initial release.
 
 ## Review Notes
 
-Absolute Timer has no login, no purchases, no ads, no analytics, no HealthKit integration, and no backend service. Profiles and settings are stored locally on the device using UserDefaults. The app is a training timer only and does not provide medical, safety, or coaching advice.
+Absolute Timer has no login, no purchases, no ads, no analytics, no HealthKit integration, no backend service, and no non-exempt encryption. Profiles and settings are stored locally on the device using UserDefaults. The app is a training timer only and does not provide medical, safety, or coaching advice.
 
 ## App Privacy Answers
 
@@ -53,6 +53,7 @@ Absolute Timer has no login, no purchases, no ads, no analytics, no HealthKit in
 - Advertising: None.
 - Health, fitness, or medical data collection: None.
 - Location, contacts, camera, microphone, photos: None.
+- Export compliance: `ITSAppUsesNonExemptEncryption = NO`.
 
 ## Privacy Manifest
 
