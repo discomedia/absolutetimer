@@ -8,7 +8,7 @@ This directory contains App Store Connect launch material for Absolute Timer.
 - `screenshots/en-US/`: iPhone 6.9-inch portrait screenshots.
 - `tools/generate_screenshots.swift`: Local screenshot generator for the PNG assets.
 
-The privacy and support pages are written for:
+The privacy policy and support page are written for:
 
-- `https://discomedia.com.au/absolute-timer/privacy`
-- `https://discomedia.com.au/absolute-timer/support`
+- `https://discomedia.co/privacy`
+- `https://discomedia.co/support`

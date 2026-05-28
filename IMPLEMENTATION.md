@@ -50,8 +50,8 @@ This document tracks the implementation status of the Absolute Timer project as 
 ## ⚠️ Needs Manual Configuration
 
 ### App Store Hosting
-- ⚠️ Host `app-store/pages/privacy.html` at `https://discomedia.com.au/absolute-timer/privacy`
-- ⚠️ Host `app-store/pages/support.html` at `https://discomedia.com.au/absolute-timer/support`
+- ⚠️ Use `https://discomedia.co/privacy` for the App Store privacy policy URL
+- ⚠️ Use `https://discomedia.co/support` for the App Store support URL
 
 ### Xcode Configuration
 The following must be configured in Xcode (cannot be done in VSCode):

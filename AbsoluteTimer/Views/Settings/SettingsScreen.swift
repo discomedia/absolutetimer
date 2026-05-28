@@ -11,8 +11,8 @@ struct SettingsScreen: View {
     @StateObject private var viewModel = SettingsViewModel()
     @Environment(\.dismiss) private var dismiss
 
-    private let privacyURL = URL(string: "https://discomedia.com.au/absolute-timer/privacy")!
-    private let supportURL = URL(string: "https://discomedia.com.au/absolute-timer/support")!
+    private let privacyURL = URL(string: "https://discomedia.co/privacy")!
+    private let supportURL = URL(string: "https://discomedia.co/support")!
 
     var body: some View {
         NavigationView {

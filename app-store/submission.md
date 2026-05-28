@@ -9,8 +9,8 @@
 - Bundle ID: com.discomedia.AbsoluteTimer
 - Version: 1.0
 - SKU: absolute-timer-ios
-- Privacy Policy URL: https://discomedia.com.au/absolute-timer/privacy
-- Support URL: https://discomedia.com.au/absolute-timer/support
+- Privacy Policy URL: https://discomedia.co/privacy
+- Support URL: https://discomedia.co/support
 
 ## Keywords
 
