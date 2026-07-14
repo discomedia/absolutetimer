@@ -40,6 +40,7 @@ final class AudioService: ObservableObject {
 
     /// Round/break bell-like cue. Maps to a standard system sound.
     func playBell() {
+        guard AppSettings.soundEnabled else { return }
         // 1007 is a commonly available tri-tone style; adjust if needed.
         // Note: System sound availability can vary; this is best-effort.
         playSystemSound(id: 1007)
@@ -47,6 +48,7 @@ final class AudioService: ObservableObject {
 
     /// Warning cue before round end. Uses a different short tone.
     func playWarning() {
+        guard AppSettings.soundEnabled else { return }
         // 1057 is a short alert tone; choose a distinct ID from the bell.
         playSystemSound(id: 1057)
     }

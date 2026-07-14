@@ -13,32 +13,20 @@ class SettingsViewModel: ObservableObject {
     @Published var speechEnabled: Bool = true
     @Published var hapticsEnabled: Bool = true
     
-    private let soundKey = "soundEnabled"
-    private let speechKey = "speechEnabled"
-    private let hapticsKey = "hapticsEnabled"
-    
     init() {
+        AppSettings.registerDefaults()
         loadSettings()
     }
     
     func loadSettings() {
-        soundEnabled = UserDefaults.standard.bool(forKey: soundKey)
-        speechEnabled = UserDefaults.standard.bool(forKey: speechKey)
-        hapticsEnabled = UserDefaults.standard.bool(forKey: hapticsKey)
-        
-        // Default to true if not set
-        if !UserDefaults.standard.bool(forKey: "hasLaunchedBefore") {
-            soundEnabled = true
-            speechEnabled = true
-            hapticsEnabled = true
-            UserDefaults.standard.set(true, forKey: "hasLaunchedBefore")
-            saveSettings()
-        }
+        soundEnabled = AppSettings.soundEnabled
+        speechEnabled = AppSettings.speechEnabled
+        hapticsEnabled = AppSettings.hapticsEnabled
     }
     
     func saveSettings() {
-        UserDefaults.standard.set(soundEnabled, forKey: soundKey)
-        UserDefaults.standard.set(speechEnabled, forKey: speechKey)
-        UserDefaults.standard.set(hapticsEnabled, forKey: hapticsKey)
+        UserDefaults.standard.set(soundEnabled, forKey: AppSettings.soundKey)
+        UserDefaults.standard.set(speechEnabled, forKey: AppSettings.speechKey)
+        UserDefaults.standard.set(hapticsEnabled, forKey: AppSettings.hapticsKey)
     }
 }

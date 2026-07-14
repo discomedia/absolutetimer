@@ -12,6 +12,10 @@ struct AbsoluteTimerApp: App {
     @StateObject private var profileStorage = ProfileStorage()
     @StateObject private var audioService = AudioService()
     @StateObject private var speechService = SpeechService()
+
+    init() {
+        AppSettings.registerDefaults()
+    }
     
     var body: some Scene {
         WindowGroup {

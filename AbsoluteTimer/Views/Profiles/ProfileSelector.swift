@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProfileSelector: View {
-    @StateObject private var storage = ProfileStorage()
+    @EnvironmentObject private var storage: ProfileStorage
     let selectedProfile: TimerProfile
     let onSelect: (TimerProfile) -> Void
     
@@ -62,6 +62,11 @@ struct ProfileSelector: View {
             .sheet(isPresented: $showingProfileManager) {
                 ProfileManager()
             }
+            .onChange(of: showingProfileManager) { _, isShowing in
+                if !isShowing {
+                    storage.loadProfiles()
+                }
+            }
         }
     }
 }
@@ -76,7 +81,7 @@ struct ProfileRow: View {
                 Text(profile.name)
                     .font(.headline)
                 
-                Text("\(profile.roundDuration)s rounds × \(profile.totalRounds) • \(profile.breakDuration)s break")
+                Text("\(TimeFormatter.formatDuration(profile.roundDuration)) rounds × \(profile.totalRounds) • \(TimeFormatter.formatDuration(profile.breakDuration)) rest")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -96,4 +101,5 @@ struct ProfileRow: View {
         selectedProfile: DefaultProfiles.profiles[0],
         onSelect: { _ in }
     )
+    .environmentObject(ProfileStorage())
 }

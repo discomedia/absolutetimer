@@ -9,7 +9,9 @@ import SwiftUI
 
 struct TimerScreen: View {
     @StateObject var viewModel: TimerViewModel
+    var onProfileChange: (TimerProfile) -> Void = { _ in }
     @State private var showingProfileSelector = false
+    @State private var showingResetConfirmation = false
     
     var body: some View {
         ZStack {
@@ -47,7 +49,9 @@ struct TimerScreen: View {
                 TimerDisplay(
                     timeRemaining: viewModel.state.timeRemaining,
                     currentRound: viewModel.state.currentRound,
-                    totalRounds: viewModel.currentProfile.totalRounds
+                    totalRounds: viewModel.currentProfile.totalRounds,
+                    phase: phaseLabel,
+                    phaseSymbol: phaseSymbol
                 )
                 
                 Spacer()
@@ -56,9 +60,10 @@ struct TimerScreen: View {
                 TimerControls(
                     isActive: viewModel.state.isActive,
                     isCompleted: viewModel.state.isCompleted,
+                    hasStarted: viewModel.state.hasStarted,
                     onStart: viewModel.start,
                     onPause: viewModel.pause,
-                    onReset: viewModel.reset
+                    onReset: requestReset
                 )
                 
                 Spacer()
@@ -70,11 +75,44 @@ struct TimerScreen: View {
                 selectedProfile: viewModel.currentProfile,
                 onSelect: { profile in
                     viewModel.updateProfile(profile)
+                    onProfileChange(profile)
                     showingProfileSelector = false
                 }
             )
         }
+        .confirmationDialog(
+            "Reset this workout?",
+            isPresented: $showingResetConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Reset Workout", role: .destructive, action: viewModel.reset)
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Your current round progress will be cleared.")
+        }
         .preferredColorScheme(.dark)
+    }
+
+    private var phaseLabel: String {
+        if viewModel.state.isCompleted { return "Complete" }
+        if !viewModel.state.hasStarted { return "Ready" }
+        if !viewModel.state.isActive { return "Paused" }
+        return viewModel.state.isRoundActive ? "Work" : "Rest"
+    }
+
+    private var phaseSymbol: String {
+        if viewModel.state.isCompleted { return "checkmark.circle.fill" }
+        if !viewModel.state.hasStarted { return "timer" }
+        if !viewModel.state.isActive { return "pause.fill" }
+        return viewModel.state.isRoundActive ? "figure.boxing" : "heart.fill"
+    }
+
+    private func requestReset() {
+        if viewModel.state.hasStarted && !viewModel.state.isCompleted {
+            showingResetConfirmation = true
+        } else {
+            viewModel.reset()
+        }
     }
 }
 
@@ -86,4 +124,5 @@ struct TimerScreen: View {
             speechService: SpeechService()
         )
     )
+    .environmentObject(ProfileStorage())
 }

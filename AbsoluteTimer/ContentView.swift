@@ -22,7 +22,8 @@ struct ContentView: View {
                         profile: selectedProfile,
                         audioService: audioService,
                         speechService: speechService
-                    )
+                    ),
+                    onProfileChange: { profileStorage.saveSelectedProfile($0.id) }
                 )
             } else {
                 // Fallback if no profile is selected
@@ -31,7 +32,8 @@ struct ContentView: View {
                         profile: DefaultProfiles.profiles[0],
                         audioService: audioService,
                         speechService: speechService
-                    )
+                    ),
+                    onProfileChange: { profileStorage.saveSelectedProfile($0.id) }
                 )
             }
             
@@ -45,6 +47,8 @@ struct ContentView: View {
                     .foregroundColor(.white.opacity(0.7))
                     .padding()
             }
+            .accessibilityLabel("Settings")
+            .frame(minWidth: 44, minHeight: 44)
             .sheet(isPresented: $showingSettings) {
                 SettingsScreen()
             }

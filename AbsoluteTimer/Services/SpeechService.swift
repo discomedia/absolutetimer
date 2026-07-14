@@ -58,6 +58,7 @@ final class SpeechService: NSObject, ObservableObject {
     func setVolume(_ value: Float) { self.volume = value }
 
     func announce(_ text: String) {
+        guard AppSettings.speechEnabled else { return }
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = voice
         utterance.rate = rate

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProfileManager: View {
-    @StateObject private var storage = ProfileStorage()
+    @EnvironmentObject private var storage: ProfileStorage
     @Environment(\.dismiss) private var dismiss
     
     @State private var profileToEdit: TimerProfile?
@@ -88,7 +88,7 @@ struct ProfileManagerRow: View {
                 Text(profile.name)
                     .font(.headline)
                 
-                Text("\(profile.roundDuration)s rounds × \(profile.totalRounds) • \(profile.breakDuration)s break")
+                Text("\(TimeFormatter.formatDuration(profile.roundDuration)) rounds × \(profile.totalRounds) • \(TimeFormatter.formatDuration(profile.breakDuration)) rest")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -104,4 +104,5 @@ struct ProfileManagerRow: View {
 
 #Preview {
     ProfileManager()
+        .environmentObject(ProfileStorage())
 }

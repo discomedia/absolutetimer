@@ -10,6 +10,7 @@ import SwiftUI
 struct TimerControls: View {
     let isActive: Bool
     let isCompleted: Bool
+    let hasStarted: Bool
     let onStart: () -> Void
     let onPause: () -> Void
     let onReset: () -> Void
@@ -21,10 +22,10 @@ struct TimerControls: View {
                     Haptics.shared.light()
                     onStart()
                 }) {
-                    Label("Start", systemImage: "play.fill")
+                    Label(hasStarted ? "Resume" : "Start", systemImage: "play.fill")
                         .font(.title2)
                         .foregroundColor(.white)
-                        .frame(width: 140, height: 60)
+                        .frame(maxWidth: .infinity, minHeight: 60)
                         .background(Color.white.opacity(0.2))
                         .cornerRadius(15)
                 }
@@ -36,7 +37,7 @@ struct TimerControls: View {
                     Label("Pause", systemImage: "pause.fill")
                         .font(.title2)
                         .foregroundColor(.white)
-                        .frame(width: 140, height: 60)
+                        .frame(maxWidth: .infinity, minHeight: 60)
                         .background(Color.white.opacity(0.2))
                         .cornerRadius(15)
                 }
@@ -49,7 +50,7 @@ struct TimerControls: View {
                 Label("Reset", systemImage: "arrow.counterclockwise")
                     .font(.title2)
                     .foregroundColor(.white)
-                    .frame(width: 140, height: 60)
+                    .frame(maxWidth: .infinity, minHeight: 60)
                     .background(Color.white.opacity(0.2))
                     .cornerRadius(15)
             }
@@ -64,6 +65,7 @@ struct TimerControls: View {
             TimerControls(
                 isActive: false,
                 isCompleted: false,
+                hasStarted: false,
                 onStart: {},
                 onPause: {},
                 onReset: {}
@@ -72,6 +74,7 @@ struct TimerControls: View {
             TimerControls(
                 isActive: true,
                 isCompleted: false,
+                hasStarted: true,
                 onStart: {},
                 onPause: {},
                 onReset: {}

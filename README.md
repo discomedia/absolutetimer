@@ -11,9 +11,11 @@ A native iOS application for boxing, MMA, and HIIT training built with SwiftUI. 
   - **Green**: Active round
   - **Red**: Break period
 - Large, easy-to-read MM:SS display
+- Clear Ready, Work, Rest, Paused, and Complete status labels
 - Round counter showing current round and total
 - Auto-switch between rounds and breaks
 - Completion detection with haptic feedback
+- Accidental-reset confirmation during an active workout
 
 ### Audio & Feedback
 - Bell sounds for round start/end
@@ -39,6 +41,7 @@ A native iOS application for boxing, MMA, and HIIT training built with SwiftUI. 
   - Total rounds (1 - 50)
 - Quick preset buttons for common durations
 - Save and delete custom profiles
+- Remembers the selected profile between launches
 - Profiles persist across app launches
 
 ### Settings
