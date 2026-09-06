@@ -97,6 +97,7 @@ AbsoluteTimer/
 AbsoluteTimerWidget/                # Status widgets and Control Center controls
 AbsoluteTimer Watch App/            # Synced watchOS companion app
 AbsoluteTimerTests/                 # Absolute-time state-machine tests
+AbsoluteTimerWatchUITests/          # Watch control UI tests
 ```
 
 ## Development Setup
@@ -125,6 +126,9 @@ xcodebuild -scheme AbsoluteTimer -destination 'platform=iOS Simulator,name=iPhon
 
 # Run the timer state-machine tests (does not require a watchOS runtime)
 xcodebuild test -scheme AbsoluteTimerCoreTests -destination 'platform=iOS Simulator,name=iPhone 15'
+
+# Run the Watch controls test (requires an installed watchOS runtime)
+xcodebuild test -scheme AbsoluteTimerWatchUITests -destination 'platform=watchOS Simulator,name=Apple Watch Series 11 (46mm)'
 ```
 
 You can also add a build task to `.vscode/tasks.json`:
