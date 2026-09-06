@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TimerScreen: View {
+    @Environment(\.scenePhase) private var scenePhase
     @StateObject var viewModel: TimerViewModel
     var onProfileChange: (TimerProfile) -> Void = { _ in }
     @State private var showingProfileSelector = false
@@ -91,6 +92,11 @@ struct TimerScreen: View {
             Text("Your current round progress will be cleared.")
         }
         .preferredColorScheme(.dark)
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .active {
+                viewModel.sceneBecameActive()
+            }
+        }
     }
 
     private var phaseLabel: String {

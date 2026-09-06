@@ -1,4 +1,4 @@
-# App Review Information — Absolute Timer 1.0 (Build 6)
+# App Review Information — Absolute Timer 1.1 (Build 7)
 
 Use the first section as the **Notes** field in App Store Connect after the
 physical-device recording has been uploaded.

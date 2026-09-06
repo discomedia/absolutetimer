@@ -7,7 +7,7 @@
 - Primary Category: Health & Fitness
 - Age Rating: 4+
 - Bundle ID: com.discomedia.AbsoluteTimer
-- Version: 1.0
+- Version: 1.1
 - SKU: absolute-timer-ios
 - Privacy Policy URL: https://discomedia.co/privacy
 - Support URL: https://discomedia.co/support
@@ -30,6 +30,9 @@ Features:
 - Preset profiles for boxing, MMA, EMOM, and E2MOM.
 - Custom profiles with configurable round duration, break duration, and round count.
 - Large full-screen timer with active, break, paused, and idle states.
+- Background-safe countdowns with local warning and phase alerts.
+- Home Screen and Lock Screen widgets plus iOS 18 Control Center controls.
+- A synchronized Apple Watch companion for status and timer controls.
 - Sound effects, voice announcements, and haptic feedback.
 - On-device profile and settings storage.
 

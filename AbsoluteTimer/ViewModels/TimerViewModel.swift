@@ -16,134 +16,165 @@ class TimerViewModel: ObservableObject {
     private var timerCancellable: AnyCancellable?
     private let audioService: AudioService
     private let speechService: SpeechService
-    
-    private var warningPlayed = false
-    private var subsecondAccumulator: Double = 0 // accumulates ~0.1s ticks until 1.0s
+    private var snapshot: SharedTimerSnapshot
+    private var lastRefreshDate = Date()
     
     init(profile: TimerProfile, audioService: AudioService, speechService: SpeechService) {
-        self.currentProfile = profile
         self.audioService = audioService
         self.speechService = speechService
-        self.state.timeRemaining = profile.roundDuration
+        let initial = SharedTimerRepository.load() ?? .ready(
+            configuration: Self.configuration(from: profile)
+        )
+        self.snapshot = initial
+        self.currentProfile = Self.profile(from: initial.configuration, fallback: profile)
+        publish(initial.resolved())
+
+        if SharedTimerRepository.load() == nil {
+            SharedTimerRepository.save(initial)
+        }
+
+        WatchConnectivityBridge.shared.activate { [weak self] _ in
+            self?.refresh(playCues: false)
+        }
+
+        startTimer()
     }
     
     func updateProfile(_ profile: TimerProfile) {
         currentProfile = profile
-        reset()
+        commit(snapshot.replacingConfiguration(Self.configuration(from: profile)))
     }
     
     func start() {
-        state.hasStarted = true
-        state.isActive = true
-        UIApplication.shared.isIdleTimerDisabled = true
-        
-        if state.currentRound == 1 && state.timeRemaining == currentProfile.roundDuration {
-            // First start
+        let wasReady = snapshot.resolved().status == .ready
+        let updated = snapshot.applying(.start)
+        guard updated != snapshot else { return }
+
+        commit(updated)
+        if wasReady {
             audioService.playBell()
             speechService.announceRound(state.currentRound, isFinal: state.currentRound == currentProfile.totalRounds)
         }
-        
-        startTimer()
     }
     
     func pause() {
-        state.isActive = false
-        UIApplication.shared.isIdleTimerDisabled = false
-        stopTimer()
+        commit(snapshot.applying(.pause))
     }
     
     func reset() {
-        stopTimer()
-        state.reset(roundDuration: currentProfile.roundDuration)
-        warningPlayed = false
-        subsecondAccumulator = 0
-        UIApplication.shared.isIdleTimerDisabled = false
+        commit(snapshot.applying(.reset))
+    }
+
+    func sceneBecameActive() {
+        lastRefreshDate = Date()
+        refresh(playCues: false)
+        Task { await SharedTimerNotifications.schedule(snapshot.resolved()) }
     }
     
     private func startTimer() {
         timerCancellable = Timer.publish(every: 0.1, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
-                self?.tick()
+                self?.refresh(playCues: true)
             }
     }
     
-    private func stopTimer() {
-        timerCancellable?.cancel()
-        timerCancellable = nil
-    }
-    
-    private func tick() {
-        guard state.isActive else { return }
+    private func refresh(playCues: Bool) {
+        let now = Date()
+        let previous = snapshot.resolved(at: lastRefreshDate)
 
-        // Accumulate sub-second ticks (~0.1s per tick)
-        let delta: Double = 0.1
-        subsecondAccumulator += delta
-
-        // Process whole seconds only
-        while subsecondAccumulator >= 1.0 {
-            subsecondAccumulator -= 1.0
-            state.timeRemaining -= 1
-
-            // Warning at 10 seconds remaining (only once)
-            if state.isRoundActive && state.timeRemaining == 10 && !warningPlayed {
-                audioService.playWarning()
-                Haptics.shared.warning()
-                warningPlayed = true
-            }
-
-            if state.timeRemaining <= 0 {
-                handleTimeEnd()
-                break
-            }
+        if let stored = SharedTimerRepository.load(), stored.mutationID != snapshot.mutationID {
+            snapshot = stored
+            currentProfile = Self.profile(from: stored.configuration, fallback: currentProfile)
         }
+
+        let current = snapshot.resolved(at: now)
+        let refreshWasContinuous = now.timeIntervalSince(lastRefreshDate) < 0.75
+        if playCues, refreshWasContinuous, UIApplication.shared.applicationState == .active {
+            playForegroundCues(from: previous, to: current)
+        }
+
+        publish(current, at: now)
+        lastRefreshDate = now
     }
-    
-    private func handleTimeEnd() {
-        if state.isRoundActive {
-            // Round ended
-            audioService.playBell()
-            Haptics.shared.heavy()
-            
-            if state.currentRound < currentProfile.totalRounds {
-                // Move to break
-                state.isRoundActive = false
-                state.timeRemaining = currentProfile.breakDuration
-                subsecondAccumulator = 0
-                warningPlayed = false
-                
-                if currentProfile.breakDuration > 0 {
-                    speechService.announceBreak()
-                } else {
-                    // No break, move to next round immediately
-                    handleTimeEnd()
-                }
-            } else {
-                // Timer completed
-                completeTimer()
-            }
+
+    private func commit(_ updated: SharedTimerSnapshot) {
+        snapshot = SharedTimerRepository.save(updated)
+        currentProfile = Self.profile(from: updated.configuration, fallback: currentProfile)
+        publish(updated.resolved())
+        UIApplication.shared.isIdleTimerDisabled = updated.status == .running
+        WatchConnectivityBridge.shared.send(updated)
+
+        if updated.status == .running {
+            Task { await SharedTimerNotifications.requestAuthorizationAndSchedule(updated) }
         } else {
-            // Break ended
-            audioService.playBell()
-            Haptics.shared.medium()
-            
-            state.currentRound += 1
-            state.isRoundActive = true
-            state.timeRemaining = currentProfile.roundDuration
-            subsecondAccumulator = 0
-            warningPlayed = false
-            
-            speechService.announceRound(state.currentRound, isFinal: state.currentRound == currentProfile.totalRounds)
+            SharedTimerNotifications.cancel()
         }
     }
-    
-    private func completeTimer() {
-        state.isCompleted = true
-        state.isActive = false
-        speechService.announceTime()
-        Haptics.shared.success()
-        UIApplication.shared.isIdleTimerDisabled = false
-        stopTimer()
+
+    private func publish(_ snapshot: SharedTimerSnapshot, at date: Date = Date()) {
+        let resolved = snapshot.resolved(at: date)
+        state.currentRound = resolved.currentRound
+        state.timeRemaining = resolved.timeRemaining(at: date)
+        state.isActive = resolved.status == .running
+        state.isRoundActive = resolved.phase == .work
+        state.isCompleted = resolved.status == .completed
+        state.hasStarted = resolved.status != .ready
+        UIApplication.shared.isIdleTimerDisabled = resolved.status == .running
+    }
+
+    private func playForegroundCues(from previous: SharedTimerSnapshot, to current: SharedTimerSnapshot) {
+        if previous.status == .running,
+           previous.phase == .work,
+           current.phase == .work,
+           previous.currentRound == current.currentRound,
+           previous.timeRemaining(at: lastRefreshDate) > 10,
+           current.timeRemaining() <= 10 {
+            audioService.playWarning()
+            Haptics.shared.warning()
+        }
+
+        guard previous.status == .running,
+              (previous.phase != current.phase ||
+               previous.currentRound != current.currentRound ||
+               current.status == .completed) else { return }
+
+        audioService.playBell()
+
+        if current.status == .completed {
+            speechService.announceTime()
+            Haptics.shared.success()
+            SharedTimerNotifications.cancel()
+        } else if current.phase == .rest {
+            speechService.announceBreak()
+            Haptics.shared.heavy()
+        } else {
+            speechService.announceRound(
+                current.currentRound,
+                isFinal: current.currentRound == current.configuration.totalRounds
+            )
+            Haptics.shared.medium()
+        }
+    }
+
+    private static func configuration(from profile: TimerProfile) -> SharedTimerConfiguration {
+        SharedTimerConfiguration(
+            profileID: profile.id,
+            profileName: profile.name,
+            roundDuration: profile.roundDuration,
+            breakDuration: profile.breakDuration,
+            totalRounds: profile.totalRounds
+        )
+    }
+
+    private static func profile(from configuration: SharedTimerConfiguration, fallback: TimerProfile) -> TimerProfile {
+        TimerProfile(
+            id: configuration.profileID,
+            name: configuration.profileName,
+            roundDuration: configuration.roundDuration,
+            breakDuration: configuration.breakDuration,
+            totalRounds: configuration.totalRounds,
+            isDefault: fallback.id == configuration.profileID ? fallback.isDefault : false
+        )
     }
 }
-

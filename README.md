@@ -27,6 +27,15 @@ A native iOS application for boxing, MMA, and HIIT training built with SwiftUI. 
   - "Time" when workout completes
 - Haptic feedback for key events
 - Keeps the screen awake while an active timer is running
+- Continues accurately while the phone is locked or the app is suspended
+- Schedules one system alert per warning/phase boundary while backgrounded
+
+### Widgets, Control Center & Apple Watch
+- Home Screen and Lock Screen widgets show the live phase, round, and countdown
+- Interactive widgets can start, pause, resume, and reset the central timer
+- Control Center controls provide start/pause and reset actions on iOS 18+
+- The Apple Watch companion shows and controls the same timer via WatchConnectivity
+- Phone and Watch exchange absolute deadlines rather than tick messages, preventing drift
 
 ### Profiles
 - **4 Default Profiles**:
@@ -54,6 +63,7 @@ A native iOS application for boxing, MMA, and HIIT training built with SwiftUI. 
 
 ```
 AbsoluteTimer/
+├── Shared/                          # Cross-target timer state, intents, alerts, and Watch sync
 ├── Models/
 │   ├── TimerProfile.swift          # Profile data model
 │   └── TimerState.swift            # Timer state tracking
@@ -83,14 +93,19 @@ AbsoluteTimer/
 │   ├── TimeFormatter.swift         # Time formatting helpers
 │   └── DefaultProfiles.swift       # Built-in profiles
 └── PrivacyInfo.xcprivacy           # App Store privacy manifest
+
+AbsoluteTimerWidget/                # Status widgets and Control Center controls
+AbsoluteTimer Watch App/            # Synced watchOS companion app
+AbsoluteTimerTests/                 # Absolute-time state-machine tests
 ```
 
 ## Development Setup
 
 ### Prerequisites
-- macOS with Xcode 15+
+- macOS with Xcode 16+
 - iOS 17.0+ SDK
-- Swift 6
+- iOS 18+ for widgets and Control Center controls
+- watchOS 10+ for the Watch companion
 
 ### VSCode Development (Recommended)
 
@@ -108,8 +123,8 @@ xcodebuild -scheme AbsoluteTimer
 # Build for simulator
 xcodebuild -scheme AbsoluteTimer -destination 'platform=iOS Simulator,name=iPhone 15'
 
-# Run tests
-xcodebuild test -scheme AbsoluteTimer
+# Run the timer state-machine tests (does not require a watchOS runtime)
+xcodebuild test -scheme AbsoluteTimerCoreTests -destination 'platform=iOS Simulator,name=iPhone 15'
 ```
 
 You can also add a build task to `.vscode/tasks.json`:
@@ -168,7 +183,10 @@ Replace the placeholder in `Assets.xcassets/AppIcon.appiconset/` with your app i
 - `Combine` for timer events
 
 ### Timer Implementation
-- Uses `Timer.publish` with 0.1s intervals for high precision
+- Derives state from persisted absolute phase deadlines, so process suspension cannot stop time
+- Uses `Timer.publish` only to refresh foreground presentation
+- Uses local notifications for background warning and phase alerts
+- Shares state through an App Group and sends mutations through WatchConnectivity
 - Prevents screen dimming during active sessions
 
 ## Building for Release

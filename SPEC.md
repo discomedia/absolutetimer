@@ -234,7 +234,7 @@ Color changes are animated with an ease-in-out transition.
 
 **Timer behavior**
 
-- High-precision ~0.1 s tick using `Timer.publish(every:on:in:)` with Combine.
+- Persist an absolute phase deadline in the shared App Group. A ~0.1 s Combine publisher refreshes foreground presentation, but elapsed time is always derived from the wall clock so suspension cannot pause the workout.
 - Automatic transitions:
   - Round → Break when a round ends (if `breakDuration > 0`).
   - If `breakDuration == 0`, immediately transition to the next round.
@@ -244,7 +244,10 @@ Color changes are animated with an ease-in-out transition.
   - Play bell and trigger completion haptic.
   - Announce “Time” via speech.
   - Mark timer as completed (`isCompleted = true`) and stop (`isActive = false`); background returns to idle (black).
-- Keeps the screen awake while the timer is actively running. Lock-screen/background timing is not promised for v1.
+- Keeps the screen awake while the timer is actively running.
+- While locked or backgrounded, the timer advances through every elapsed phase from its absolute deadline and schedules local warning/transition alerts.
+- A WidgetKit extension exposes live status widgets plus iOS 18 Control Center start/pause and reset controls.
+- A watchOS 10+ companion uses WatchConnectivity to display and control the same authoritative timer snapshot.
 
 ---
 

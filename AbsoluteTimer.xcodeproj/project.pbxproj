@@ -6,9 +6,82 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A30000000000000000000001 /* SharedTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A21000000000000000000001 /* SharedTimer.swift */; };
+		A30000000000000000000002 /* SharedTimerNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = A21000000000000000000002 /* SharedTimerNotifications.swift */; };
+		A30000000000000000000003 /* SharedTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A21000000000000000000001 /* SharedTimer.swift */; };
+		A30000000000000000000004 /* WatchConnectivityBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A21000000000000000000003 /* WatchConnectivityBridge.swift */; };
+		A30000000000000000000005 /* AbsoluteTimerWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A10000000000000000000001 /* AbsoluteTimerWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A30000000000000000000006 /* AbsoluteTimer Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = A10000000000000000000002 /* AbsoluteTimer Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A30000000000000000000007 /* SharedTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A21000000000000000000001 /* SharedTimer.swift */; };
+		A30000000000000000000008 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A21000000000000000000004 /* Assets.xcassets */; };
+		A30000000000000000000009 /* TimerIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A21000000000000000000005 /* TimerIntents.swift */; };
+		A3000000000000000000000A /* SharedTimerNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = A21000000000000000000002 /* SharedTimerNotifications.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A71000000000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 787CFABE2EC800D800C49690 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A50000000000000000000001;
+			remoteInfo = AbsoluteTimerWidget;
+		};
+		A71000000000000000000002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 787CFABE2EC800D800C49690 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A50000000000000000000002;
+			remoteInfo = "AbsoluteTimer Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A40000000000000000000010 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A30000000000000000000005 /* AbsoluteTimerWidget.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40000000000000000000011 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				A30000000000000000000006 /* AbsoluteTimer Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		787CFAC62EC800D800C49690 /* AbsoluteTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AbsoluteTimer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000000000000000000001 /* AbsoluteTimerWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AbsoluteTimerWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000000000000000000002 /* AbsoluteTimer Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AbsoluteTimer Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000000000000000000003 /* AbsoluteTimerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AbsoluteTimerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A21000000000000000000001 /* SharedTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbsoluteTimer/Shared/SharedTimer.swift; sourceTree = SOURCE_ROOT; };
+		A21000000000000000000002 /* SharedTimerNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbsoluteTimer/Shared/SharedTimerNotifications.swift; sourceTree = SOURCE_ROOT; };
+		A21000000000000000000003 /* WatchConnectivityBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbsoluteTimer/Shared/WatchConnectivityBridge.swift; sourceTree = SOURCE_ROOT; };
+		A21000000000000000000004 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = AbsoluteTimer/Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		A21000000000000000000005 /* TimerIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbsoluteTimer/Shared/TimerIntents.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A22000000000000000000001 /* Exceptions for "AbsoluteTimerWidget" folder in "AbsoluteTimerWidget" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = A50000000000000000000001 /* AbsoluteTimerWidget */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		787CFAC82EC800D800C49690 /* AbsoluteTimer */ = {
@@ -16,10 +89,49 @@
 			path = AbsoluteTimer;
 			sourceTree = "<group>";
 		};
+		A20000000000000000000001 /* AbsoluteTimerWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A22000000000000000000001 /* Exceptions for "AbsoluteTimerWidget" folder in "AbsoluteTimerWidget" target */,
+			);
+			path = AbsoluteTimerWidget;
+			sourceTree = "<group>";
+		};
+		A20000000000000000000002 /* AbsoluteTimer Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "AbsoluteTimer Watch App";
+			sourceTree = "<group>";
+		};
+		A20000000000000000000003 /* AbsoluteTimerTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AbsoluteTimerTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		787CFAC32EC800D800C49690 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40000000000000000000002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40000000000000000000005 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40000000000000000000008 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,6 +145,14 @@
 			isa = PBXGroup;
 			children = (
 				787CFAC82EC800D800C49690 /* AbsoluteTimer */,
+				A20000000000000000000001 /* AbsoluteTimerWidget */,
+				A20000000000000000000002 /* AbsoluteTimer Watch App */,
+				A20000000000000000000003 /* AbsoluteTimerTests */,
+				A21000000000000000000001 /* SharedTimer.swift */,
+				A21000000000000000000002 /* SharedTimerNotifications.swift */,
+				A21000000000000000000003 /* WatchConnectivityBridge.swift */,
+				A21000000000000000000004 /* Assets.xcassets */,
+				A21000000000000000000005 /* TimerIntents.swift */,
 				787CFAC72EC800D800C49690 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +161,9 @@
 			isa = PBXGroup;
 			children = (
 				787CFAC62EC800D800C49690 /* AbsoluteTimer.app */,
+				A10000000000000000000001 /* AbsoluteTimerWidget.appex */,
+				A10000000000000000000002 /* AbsoluteTimer Watch App.app */,
+				A10000000000000000000003 /* AbsoluteTimerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -55,10 +178,14 @@
 				787CFAC22EC800D800C49690 /* Sources */,
 				787CFAC32EC800D800C49690 /* Frameworks */,
 				787CFAC42EC800D800C49690 /* Resources */,
+				A40000000000000000000010 /* Embed App Extensions */,
+				A40000000000000000000011 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A70000000000000000000001 /* PBXTargetDependency */,
+				A70000000000000000000002 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				787CFAC82EC800D800C49690 /* AbsoluteTimer */,
@@ -69,6 +196,72 @@
 			productName = AbsoluteTimer;
 			productReference = 787CFAC62EC800D800C49690 /* AbsoluteTimer.app */;
 			productType = "com.apple.product-type.application";
+		};
+		A50000000000000000000001 /* AbsoluteTimerWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A60000000000000000000001 /* Build configuration list for PBXNativeTarget "AbsoluteTimerWidget" */;
+			buildPhases = (
+				A40000000000000000000001 /* Sources */,
+				A40000000000000000000002 /* Frameworks */,
+				A40000000000000000000003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A20000000000000000000001 /* AbsoluteTimerWidget */,
+			);
+			name = AbsoluteTimerWidget;
+			packageProductDependencies = (
+			);
+			productName = AbsoluteTimerWidget;
+			productReference = A10000000000000000000001 /* AbsoluteTimerWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		A50000000000000000000002 /* AbsoluteTimer Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A60000000000000000000002 /* Build configuration list for PBXNativeTarget "AbsoluteTimer Watch App" */;
+			buildPhases = (
+				A40000000000000000000004 /* Sources */,
+				A40000000000000000000005 /* Frameworks */,
+				A40000000000000000000006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A20000000000000000000002 /* AbsoluteTimer Watch App */,
+			);
+			name = "AbsoluteTimer Watch App";
+			packageProductDependencies = (
+			);
+			productName = "AbsoluteTimer Watch App";
+			productReference = A10000000000000000000002 /* AbsoluteTimer Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A50000000000000000000003 /* AbsoluteTimerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A60000000000000000000003 /* Build configuration list for PBXNativeTarget "AbsoluteTimerTests" */;
+			buildPhases = (
+				A40000000000000000000007 /* Sources */,
+				A40000000000000000000008 /* Frameworks */,
+				A40000000000000000000009 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A20000000000000000000003 /* AbsoluteTimerTests */,
+			);
+			name = AbsoluteTimerTests;
+			packageProductDependencies = (
+			);
+			productName = AbsoluteTimerTests;
+			productReference = A10000000000000000000003 /* AbsoluteTimerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -82,6 +275,16 @@
 				TargetAttributes = {
 					787CFAC52EC800D800C49690 = {
 						CreatedOnToolsVersion = 26.1.1;
+					};
+					A50000000000000000000001 = {
+						CreatedOnToolsVersion = 26.6;
+					};
+					A50000000000000000000002 = {
+						CreatedOnToolsVersion = 26.6;
+					};
+					A50000000000000000000003 = {
+						CreatedOnToolsVersion = 26.6;
+						TestTargetID = 787CFAC52EC800D800C49690;
 					};
 				};
 			};
@@ -100,12 +303,37 @@
 			projectRoot = "";
 			targets = (
 				787CFAC52EC800D800C49690 /* AbsoluteTimer */,
+				A50000000000000000000001 /* AbsoluteTimerWidget */,
+				A50000000000000000000002 /* AbsoluteTimer Watch App */,
+				A50000000000000000000003 /* AbsoluteTimerTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		787CFAC42EC800D800C49690 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40000000000000000000003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40000000000000000000006 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A30000000000000000000008 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40000000000000000000009 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +350,40 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A40000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A30000000000000000000001 /* SharedTimer.swift in Sources */,
+				A30000000000000000000002 /* SharedTimerNotifications.swift in Sources */,
+				A30000000000000000000009 /* TimerIntents.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40000000000000000000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A30000000000000000000003 /* SharedTimer.swift in Sources */,
+				A30000000000000000000004 /* WatchConnectivityBridge.swift in Sources */,
+				A3000000000000000000000A /* SharedTimerNotifications.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40000000000000000000007 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A30000000000000000000007 /* SharedTimer.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A70000000000000000000001 /* PBXTargetDependency */ = {isa = PBXTargetDependency; target = A50000000000000000000001 /* AbsoluteTimerWidget */; targetProxy = A71000000000000000000001 /* PBXContainerItemProxy */; };
+		A70000000000000000000002 /* PBXTargetDependency */ = {isa = PBXTargetDependency; target = A50000000000000000000002 /* AbsoluteTimer Watch App */; targetProxy = A71000000000000000000002 /* PBXContainerItemProxy */; };
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		787CFACF2EC800D900C49690 /* Debug */ = {
@@ -252,8 +513,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = AbsoluteTimer/AbsoluteTimer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = F5RFJPL3F3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -269,11 +531,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.discomedia.AbsoluteTimer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TIMER_APP";
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
@@ -288,8 +551,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = AbsoluteTimer/AbsoluteTimer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = F5RFJPL3F3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -305,14 +569,141 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.discomedia.AbsoluteTimer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TIMER_APP";
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		A61000000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = AbsoluteTimerWidget/AbsoluteTimerWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 7;
+				DEVELOPMENT_TEAM = F5RFJPL3F3;
+				INFOPLIST_FILE = AbsoluteTimerWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks", );
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.discomedia.AbsoluteTimer.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		A61000000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = AbsoluteTimerWidget/AbsoluteTimerWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 7;
+				DEVELOPMENT_TEAM = F5RFJPL3F3;
+				INFOPLIST_FILE = AbsoluteTimerWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks", );
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.discomedia.AbsoluteTimer.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		A61000000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "AbsoluteTimer Watch App/AbsoluteTimerWatch.entitlements";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 7;
+				DEVELOPMENT_TEAM = F5RFJPL3F3;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Absolute Timer";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.discomedia.AbsoluteTimer;
+				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = NO;
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.discomedia.AbsoluteTimer.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
+		A61000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "AbsoluteTimer Watch App/AbsoluteTimerWatch.entitlements";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 7;
+				DEVELOPMENT_TEAM = F5RFJPL3F3;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Absolute Timer";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.discomedia.AbsoluteTimer;
+				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = NO;
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.discomedia.AbsoluteTimer.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
+		A61000000000000000000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = F5RFJPL3F3;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.discomedia.AbsoluteTimerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+		};
+			name = Debug;
+		};
+		A61000000000000000000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = F5RFJPL3F3;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.discomedia.AbsoluteTimerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -336,6 +727,24 @@
 				787CFAD22EC800D900C49690 /* Debug */,
 				787CFAD32EC800D900C49690 /* Release */,
 			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A60000000000000000000001 /* Build configuration list for PBXNativeTarget "AbsoluteTimerWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (A61000000000000000000001 /* Debug */, A61000000000000000000002 /* Release */, );
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A60000000000000000000002 /* Build configuration list for PBXNativeTarget "AbsoluteTimer Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (A61000000000000000000003 /* Debug */, A61000000000000000000004 /* Release */, );
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A60000000000000000000003 /* Build configuration list for PBXNativeTarget "AbsoluteTimerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (A61000000000000000000005 /* Debug */, A61000000000000000000006 /* Release */, );
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
