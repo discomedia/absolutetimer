@@ -40,7 +40,7 @@ Absolute Timer is a training timer only. It is not medical, safety, or coaching 
 
 ## What's New
 
-Initial release.
+Timers now keep accurate time while the app is in the background. This update also adds Home Screen and Lock Screen widgets, Control Center controls, and an Apple Watch companion that stays in sync with your iPhone.
 
 ## Review Notes
 
@@ -71,8 +71,9 @@ Absolute Timer has no login, no purchases, no ads, no analytics, no HealthKit in
 - `app-store/screenshots/en-US/03-break.png`
 - `app-store/screenshots/en-US/04-profile-editor.png`
 - `app-store/screenshots/en-US/05-settings.png`
+- `app-store/screenshots/en-US/06-watch-active.jpg`
 
-All screenshots are 1290 x 2796 PNG files for iPhone 6.9-inch portrait upload.
+The iPhone screenshots are 1290 x 2796 PNG files for the 6.9-inch portrait upload. The Apple Watch screenshot is a 416 x 496 JPEG captured from the Series 11 simulator.
 
 ## Icon
 
