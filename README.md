@@ -15,20 +15,21 @@ A native iOS application for boxing, MMA, and HIIT training built with SwiftUI. 
 - Round counter showing current round and total
 - Auto-switch between rounds and breaks
 - Completion detection with haptic feedback
+- Five-second pre-round countdown with cues at two, one, and start
 - Accidental-reset confirmation during an active workout
 
 ### Audio & Feedback
 - Bell sounds for round start/end
-- Warning beep at 10 seconds before round end
+- Louder double-tone alert at 10 seconds before round end
 - Text-to-speech announcements:
   - "Round X" at the start of each round
   - "Final Round" for the last round
   - "Break" during rest periods
   - "Time" when workout completes
-- Haptic feedback for key events
+- Optional iPhone and Apple Watch haptic feedback for round starts, warnings, and round ends
 - Keeps the screen awake while an active timer is running
 - Continues accurately while the phone is locked or the app is suspended
-- Schedules one system alert per warning/phase boundary while backgrounded
+- Schedules custom countdown, warning, and phase sounds while backgrounded
 
 ### Widgets, Control Center & Apple Watch
 - Home Screen and Lock Screen widgets show the live phase, round, and countdown

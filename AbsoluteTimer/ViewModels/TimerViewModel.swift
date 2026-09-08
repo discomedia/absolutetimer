@@ -14,6 +14,7 @@ class TimerViewModel: ObservableObject {
     @Published var currentProfile: TimerProfile
     
     private var timerCancellable: AnyCancellable?
+    private var settingsCancellable: AnyCancellable?
     private let audioService: AudioService
     private let speechService: SpeechService
     private var snapshot: SharedTimerSnapshot
@@ -22,20 +23,42 @@ class TimerViewModel: ObservableObject {
     init(profile: TimerProfile, audioService: AudioService, speechService: SpeechService) {
         self.audioService = audioService
         self.speechService = speechService
-        let initial = SharedTimerRepository.load() ?? .ready(
+        let persisted = SharedTimerRepository.load()
+        let base = persisted ?? .ready(
             configuration: Self.configuration(from: profile)
         )
+        let initial: SharedTimerSnapshot
+        if base.configuration.soundEnabled != AppSettings.soundEnabled ||
+            base.configuration.hapticsEnabled != AppSettings.hapticsEnabled {
+            initial = base.replacingPreferences(
+                soundEnabled: AppSettings.soundEnabled,
+                hapticsEnabled: AppSettings.hapticsEnabled
+            )
+        } else {
+            initial = base
+        }
         self.snapshot = initial
         self.currentProfile = Self.profile(from: initial.configuration, fallback: profile)
         publish(initial.resolved())
 
-        if SharedTimerRepository.load() == nil {
+        if persisted == nil || initial != base {
             SharedTimerRepository.save(initial)
         }
 
         WatchConnectivityBridge.shared.activate { [weak self] _ in
             self?.refresh(playCues: false)
         }
+
+        settingsCancellable = NotificationCenter.default.publisher(for: .appSettingsDidChange)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                commit(
+                    snapshot.replacingPreferences(
+                        soundEnabled: AppSettings.soundEnabled,
+                        hapticsEnabled: AppSettings.hapticsEnabled
+                    )
+                )
+            }
 
         startTimer()
     }
@@ -46,15 +69,10 @@ class TimerViewModel: ObservableObject {
     }
     
     func start() {
-        let wasReady = snapshot.resolved().status == .ready
         let updated = snapshot.applying(.start)
         guard updated != snapshot else { return }
 
         commit(updated)
-        if wasReady {
-            audioService.playBell()
-            speechService.announceRound(state.currentRound, isFinal: state.currentRound == currentProfile.totalRounds)
-        }
     }
     
     func pause() {
@@ -102,10 +120,10 @@ class TimerViewModel: ObservableObject {
         snapshot = SharedTimerRepository.save(updated)
         currentProfile = Self.profile(from: updated.configuration, fallback: currentProfile)
         publish(updated.resolved())
-        UIApplication.shared.isIdleTimerDisabled = updated.status == .running
+        UIApplication.shared.isIdleTimerDisabled = updated.isActive
         WatchConnectivityBridge.shared.send(updated)
 
-        if updated.status == .running {
+        if updated.isActive {
             Task { await SharedTimerNotifications.requestAuthorizationAndSchedule(updated) }
         } else {
             SharedTimerNotifications.cancel()
@@ -116,14 +134,36 @@ class TimerViewModel: ObservableObject {
         let resolved = snapshot.resolved(at: date)
         state.currentRound = resolved.currentRound
         state.timeRemaining = resolved.timeRemaining(at: date)
-        state.isActive = resolved.status == .running
+        state.isActive = resolved.isActive
+        state.isCountingDown = resolved.status == .countdown
         state.isRoundActive = resolved.phase == .work
         state.isCompleted = resolved.status == .completed
         state.hasStarted = resolved.status != .ready
-        UIApplication.shared.isIdleTimerDisabled = resolved.status == .running
+        UIApplication.shared.isIdleTimerDisabled = resolved.isActive
     }
 
     private func playForegroundCues(from previous: SharedTimerSnapshot, to current: SharedTimerSnapshot) {
+        if previous.status == .countdown {
+            let previousRemaining = previous.timeRemaining(at: lastRefreshDate)
+            let currentRemaining = current.timeRemaining()
+
+            if current.status == .countdown {
+                if previousRemaining > 2, currentRemaining <= 2 {
+                    audioService.playCountdown()
+                }
+                if previousRemaining > 1, currentRemaining <= 1 {
+                    audioService.playCountdown()
+                }
+            } else if current.status == .running {
+                audioService.playStart()
+                speechService.announceRound(
+                    current.currentRound,
+                    isFinal: current.currentRound == current.configuration.totalRounds
+                )
+                Haptics.shared.medium()
+            }
+        }
+
         if previous.status == .running,
            previous.phase == .work,
            current.phase == .work,
@@ -139,16 +179,17 @@ class TimerViewModel: ObservableObject {
                previous.currentRound != current.currentRound ||
                current.status == .completed) else { return }
 
-        audioService.playBell()
-
         if current.status == .completed {
+            audioService.playBell()
             speechService.announceTime()
             Haptics.shared.success()
             SharedTimerNotifications.cancel()
         } else if current.phase == .rest {
+            audioService.playBell()
             speechService.announceBreak()
             Haptics.shared.heavy()
         } else {
+            audioService.playStart()
             speechService.announceRound(
                 current.currentRound,
                 isFinal: current.currentRound == current.configuration.totalRounds
@@ -163,7 +204,9 @@ class TimerViewModel: ObservableObject {
             profileName: profile.name,
             roundDuration: profile.roundDuration,
             breakDuration: profile.breakDuration,
-            totalRounds: profile.totalRounds
+            totalRounds: profile.totalRounds,
+            soundEnabled: AppSettings.soundEnabled,
+            hapticsEnabled: AppSettings.hapticsEnabled
         )
     }
 

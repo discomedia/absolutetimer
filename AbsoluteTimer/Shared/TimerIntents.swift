@@ -45,7 +45,7 @@ struct ResetTimerIntent: AudioPlaybackIntent {
 
 @MainActor
 private func finishTimerMutation(_ snapshot: SharedTimerSnapshot) async {
-    if snapshot.status == .running {
+    if snapshot.isActive {
         await SharedTimerNotifications.requestAuthorizationAndSchedule(snapshot)
     } else {
         SharedTimerNotifications.cancel()

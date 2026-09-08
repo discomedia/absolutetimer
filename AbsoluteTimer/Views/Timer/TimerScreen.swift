@@ -19,7 +19,8 @@ struct TimerScreen: View {
             TimerBackground(
                 isActive: viewModel.state.isActive,
                 isRoundActive: viewModel.state.isRoundActive,
-                isPaused: !viewModel.state.isActive && viewModel.state.hasStarted && !viewModel.state.isCompleted
+                isPaused: !viewModel.state.isActive && viewModel.state.hasStarted && !viewModel.state.isCompleted,
+                isCountingDown: viewModel.state.isCountingDown
             )
             
             VStack(spacing: 40) {
@@ -52,7 +53,8 @@ struct TimerScreen: View {
                     currentRound: viewModel.state.currentRound,
                     totalRounds: viewModel.currentProfile.totalRounds,
                     phase: phaseLabel,
-                    phaseSymbol: phaseSymbol
+                    phaseSymbol: phaseSymbol,
+                    showsSecondsOnly: viewModel.state.isCountingDown
                 )
                 
                 Spacer()
@@ -101,6 +103,7 @@ struct TimerScreen: View {
 
     private var phaseLabel: String {
         if viewModel.state.isCompleted { return "Complete" }
+        if viewModel.state.isCountingDown { return "Get Ready" }
         if !viewModel.state.hasStarted { return "Ready" }
         if !viewModel.state.isActive { return "Paused" }
         return viewModel.state.isRoundActive ? "Work" : "Rest"
@@ -108,6 +111,7 @@ struct TimerScreen: View {
 
     private var phaseSymbol: String {
         if viewModel.state.isCompleted { return "checkmark.circle.fill" }
+        if viewModel.state.isCountingDown { return "hourglass" }
         if !viewModel.state.hasStarted { return "timer" }
         if !viewModel.state.isActive { return "pause.fill" }
         return viewModel.state.isRoundActive ? "figure.boxing" : "heart.fill"

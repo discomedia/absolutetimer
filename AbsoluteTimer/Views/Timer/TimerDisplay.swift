@@ -13,6 +13,7 @@ struct TimerDisplay: View {
     let totalRounds: Int
     let phase: String
     let phaseSymbol: String
+    var showsSecondsOnly = false
     
     var body: some View {
         VStack(spacing: 16) {
@@ -24,7 +25,7 @@ struct TimerDisplay: View {
                 .padding(.vertical, 8)
                 .background(.black.opacity(0.18), in: Capsule())
 
-            Text(TimeFormatter.formatTime(timeRemaining))
+            Text(showsSecondsOnly ? "\(timeRemaining)" : TimeFormatter.formatTime(timeRemaining))
                 .font(.system(size: 120, weight: .bold, design: .rounded))
                 .foregroundColor(.white)
                 .monospacedDigit()

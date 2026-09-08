@@ -8,16 +8,16 @@
 import AVFoundation
 import Foundation
 import Combine
-import AudioToolbox
 
-/// AudioService provides non-verbal cues using system-provided capabilities only.
-/// - No bundled audio files are used.
-/// - Prefers system sounds when available; otherwise, falls back to haptics.
-final class AudioService: ObservableObject {
+/// Plays the same bundled cues used by background local notifications.
+final class AudioService: NSObject, ObservableObject, AVAudioPlayerDelegate {
     let objectWillChange = ObservableObjectPublisher()
 
     /// Configure audio session for playback/mix to allow TTS + system sounds while respecting other audio.
-    init() {
+    private var player: AVAudioPlayer?
+
+    override init() {
+        super.init()
         setupAudioSession()
     }
 
@@ -31,25 +31,38 @@ final class AudioService: ObservableObject {
         }
     }
 
-    // MARK: - System Cues
+    private func play(resource: String) {
+        guard AppSettings.soundEnabled,
+              let url = Bundle.main.url(forResource: resource, withExtension: "wav") else { return }
 
-    /// Attempts to play a system sound by ID. If unavailable, does nothing (TimerViewModel may additionally trigger haptics).
-    private func playSystemSound(id: SystemSoundID) {
-        AudioServicesPlaySystemSound(id)
+        do {
+            try AVAudioSession.sharedInstance().setActive(true)
+            let player = try AVAudioPlayer(contentsOf: url)
+            player.delegate = self
+            player.volume = 1
+            player.prepareToPlay()
+            player.play()
+            self.player = player
+        } catch {
+            print("Failed to play \(resource) cue: \(error)")
+        }
     }
 
     /// Round/break bell-like cue. Maps to a standard system sound.
     func playBell() {
-        guard AppSettings.soundEnabled else { return }
-        // 1007 is a commonly available tri-tone style; adjust if needed.
-        // Note: System sound availability can vary; this is best-effort.
-        playSystemSound(id: 1007)
+        play(resource: "bell")
+    }
+
+    func playCountdown() {
+        play(resource: "countdown")
+    }
+
+    func playStart() {
+        play(resource: "start")
     }
 
     /// Warning cue before round end. Uses a different short tone.
     func playWarning() {
-        guard AppSettings.soundEnabled else { return }
-        // 1057 is a short alert tone; choose a distinct ID from the bell.
-        playSystemSound(id: 1057)
+        play(resource: "warning-double")
     }
 }

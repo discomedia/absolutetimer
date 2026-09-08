@@ -37,3 +37,7 @@ enum AppSettings {
         return UserDefaults.standard.bool(forKey: hapticsKey)
     }
 }
+
+extension Notification.Name {
+    static let appSettingsDidChange = Notification.Name("AppSettingsDidChange")
+}

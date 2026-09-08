@@ -121,8 +121,12 @@ struct TimerWidgetView: View {
 
     @ViewBuilder
     private var timerText: some View {
-        if snapshot.status == .running, let endDate = snapshot.phaseEndDate {
-            Text(endDate, style: .timer)
+        if snapshot.isActive, let endDate = snapshot.phaseEndDate {
+            if snapshot.status == .countdown {
+                Text("\(snapshot.timeRemaining(at: entry.date))")
+            } else {
+                Text(endDate, style: .timer)
+            }
         } else {
             Text(format(snapshot.timeRemaining(at: entry.date)))
         }
@@ -131,6 +135,7 @@ struct TimerWidgetView: View {
     private var phaseLabel: String {
         switch snapshot.status {
         case .ready: "Ready"
+        case .countdown: "Get Ready"
         case .paused: "Paused"
         case .completed: "Complete"
         case .running: snapshot.phase == .work ? "Work" : "Rest"
@@ -140,6 +145,7 @@ struct TimerWidgetView: View {
     private var phaseSymbol: String {
         switch snapshot.status {
         case .ready: "timer"
+        case .countdown: "hourglass"
         case .paused: "pause.fill"
         case .completed: "checkmark.circle.fill"
         case .running: snapshot.phase == .work ? "figure.boxing" : "heart.fill"
@@ -153,6 +159,7 @@ struct TimerWidgetView: View {
 
 enum TimerWidgetColors {
     static func background(for snapshot: SharedTimerSnapshot) -> Color {
+        if snapshot.status == .countdown { return Color.blue.opacity(0.8) }
         guard snapshot.status == .running else { return .black }
         return snapshot.phase == .work ? Color.green.opacity(0.8) : Color.red.opacity(0.8)
     }

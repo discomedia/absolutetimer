@@ -19,7 +19,8 @@ struct WatchTimerView: View {
                 .foregroundStyle(phaseColor)
 
             TimelineView(.periodic(from: .now, by: 0.25)) { context in
-                Text(format(model.snapshot.resolved(at: context.date).timeRemaining(at: context.date)))
+                let current = model.snapshot.resolved(at: context.date)
+                Text(current.status == .countdown ? "\(current.timeRemaining(at: context.date))" : format(current.timeRemaining(at: context.date)))
                     .font(.system(size: 38, weight: .bold, design: .rounded))
                     .monospacedDigit()
                     .minimumScaleFactor(0.6)
@@ -48,6 +49,7 @@ struct WatchTimerView: View {
     private var phaseLabel: String {
         switch snapshot.status {
         case .ready: "Ready"
+        case .countdown: "Get Ready"
         case .paused: "Paused"
         case .completed: "Complete"
         case .running: snapshot.phase == .work ? "Work" : "Rest"
@@ -55,6 +57,7 @@ struct WatchTimerView: View {
     }
 
     private var phaseColor: Color {
+        if snapshot.status == .countdown { return .blue }
         guard snapshot.status == .running else { return .secondary }
         return snapshot.phase == .work ? .green : .red
     }

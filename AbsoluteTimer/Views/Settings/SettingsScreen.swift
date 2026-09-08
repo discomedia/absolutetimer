@@ -37,6 +37,16 @@ struct SettingsScreen: View {
                                 Haptics.shared.light()
                             }
                         }
+
+                    Text("Haptic Feedback applies to timer events on iPhone and Apple Watch.")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                }
+
+                Section("Apple Watch") {
+                    Text("In the Watch app on iPhone, go to My Watch > General > Return to Clock > Absolute Timer, choose Custom, then After 1 Hour. If Workout keeps taking over, open Workout in the same list and turn off Return to App.")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
                 }
 
                 Section("About") {

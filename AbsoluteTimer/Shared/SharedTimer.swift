@@ -7,6 +7,7 @@ enum SharedTimerPhase: String, Codable, Sendable {
 
 enum SharedTimerStatus: String, Codable, Sendable {
     case ready
+    case countdown
     case running
     case paused
     case completed
@@ -25,6 +26,8 @@ struct SharedTimerConfiguration: Codable, Equatable, Sendable {
     var roundDuration: Int
     var breakDuration: Int
     var totalRounds: Int
+    var soundEnabled: Bool? = nil
+    var hapticsEnabled: Bool? = nil
 
     static let standardBoxing = SharedTimerConfiguration(
         profileID: UUID(uuidString: "4E82A9CF-26A6-4CC4-9955-B47671B1B711")!,
@@ -71,7 +74,7 @@ struct SharedTimerSnapshot: Codable, Equatable, Sendable {
     }
 
     var isActive: Bool {
-        status == .running
+        status == .countdown || status == .running
     }
 
     var isCompleted: Bool {
@@ -80,7 +83,7 @@ struct SharedTimerSnapshot: Codable, Equatable, Sendable {
 
     func timeRemaining(at date: Date = Date()) -> Int {
         switch status {
-        case .running:
+        case .countdown, .running:
             guard let phaseEndDate else { return 0 }
             return max(0, Int(ceil(phaseEndDate.timeIntervalSince(date))))
         case .ready, .paused:
@@ -93,16 +96,26 @@ struct SharedTimerSnapshot: Codable, Equatable, Sendable {
     /// Advances through every elapsed phase from absolute wall-clock dates. This
     /// remains accurate even when iOS suspends every process in the application.
     func resolved(at date: Date = Date()) -> SharedTimerSnapshot {
-        guard status == .running else { return self }
+        guard isActive else { return self }
 
         var result = self
         var safetyCounter = 0
 
-        while result.status == .running,
+        while result.isActive,
               let endDate = result.phaseEndDate,
               date >= endDate,
               safetyCounter < 256 {
             safetyCounter += 1
+
+            if result.status == .countdown {
+                result.status = .running
+                result.phase = .work
+                result.phaseEndDate = endDate.addingTimeInterval(
+                    TimeInterval(result.configuration.roundDuration)
+                )
+                result.pausedRemaining = TimeInterval(result.configuration.roundDuration)
+                continue
+            }
 
             switch result.phase {
             case .work:
@@ -143,9 +156,17 @@ struct SharedTimerSnapshot: Codable, Equatable, Sendable {
         switch action {
         case .start:
             guard result.status == .ready || result.status == .paused else { return result }
-            result.status = .running
-            result.phaseEndDate = date.addingTimeInterval(max(0.01, result.pausedRemaining))
+            if result.status == .ready {
+                result.status = .countdown
+                result.phaseEndDate = date.addingTimeInterval(5)
+            } else {
+                result.status = .running
+                result.phaseEndDate = date.addingTimeInterval(max(0.01, result.pausedRemaining))
+            }
         case .pause:
+            if result.status == .countdown {
+                return .ready(configuration: result.configuration, at: date)
+            }
             guard result.status == .running, let endDate = result.phaseEndDate else { return result }
             result.pausedRemaining = max(0, endDate.timeIntervalSince(date))
             result.phaseEndDate = nil
@@ -169,6 +190,19 @@ struct SharedTimerSnapshot: Codable, Equatable, Sendable {
         .ready(configuration: configuration, at: date)
     }
 
+    func replacingPreferences(
+        soundEnabled: Bool,
+        hapticsEnabled: Bool,
+        at date: Date = Date()
+    ) -> SharedTimerSnapshot {
+        var result = self
+        result.configuration.soundEnabled = soundEnabled
+        result.configuration.hapticsEnabled = hapticsEnabled
+        result.mutationID = UUID()
+        result.modifiedAt = date
+        return result
+    }
+
     func isNewer(than other: SharedTimerSnapshot) -> Bool {
         if modifiedAt != other.modifiedAt {
             return modifiedAt > other.modifiedAt
@@ -179,16 +213,43 @@ struct SharedTimerSnapshot: Codable, Equatable, Sendable {
     /// Returns the phase boundaries used by WidgetKit and local notifications.
     func futureEvents(after date: Date = Date(), limit: Int = 60) -> [SharedTimerEvent] {
         var cursor = resolved(at: date)
-        guard cursor.status == .running else { return [] }
+        guard cursor.isActive else { return [] }
 
         var events: [SharedTimerEvent] = []
         var safetyCounter = 0
 
-        while cursor.status == .running,
+        while cursor.isActive,
               let endDate = cursor.phaseEndDate,
               events.count < limit,
               safetyCounter < 256 {
             safetyCounter += 1
+
+            if cursor.status == .countdown {
+                for seconds in [2, 1] {
+                    let tickDate = endDate.addingTimeInterval(TimeInterval(-seconds))
+                    if tickDate > date.addingTimeInterval(0.5), events.count < limit {
+                        events.append(
+                            SharedTimerEvent(
+                                date: tickDate,
+                                kind: .countdownTick(seconds),
+                                round: cursor.currentRound
+                            )
+                        )
+                    }
+                }
+
+                if events.count < limit {
+                    events.append(
+                        SharedTimerEvent(
+                            date: endDate,
+                            kind: .roundStarted,
+                            round: cursor.currentRound
+                        )
+                    )
+                }
+                cursor = cursor.resolved(at: endDate)
+                continue
+            }
 
             if cursor.phase == .work {
                 let warningDate = endDate.addingTimeInterval(-10)
@@ -231,6 +292,7 @@ struct SharedTimerSnapshot: Codable, Equatable, Sendable {
 
 struct SharedTimerEvent: Equatable, Sendable {
     enum Kind: Equatable, Sendable {
+        case countdownTick(Int)
         case warning
         case restStarted
         case roundStarted

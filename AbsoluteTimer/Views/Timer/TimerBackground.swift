@@ -11,11 +11,15 @@ struct TimerBackground: View {
     let isActive: Bool
     let isRoundActive: Bool
     let isPaused: Bool
+    var isCountingDown = false
     
     var backgroundColor: Color {
         if isPaused {
             // Paused state: yellow
             return Color(red: 0.96, green: 0.62, blue: 0.04) // #f59e0b
+        }
+        if isCountingDown {
+            return Color(red: 0.10, green: 0.42, blue: 0.72)
         }
         if !isActive {
             // Idle before start or after reset/completion

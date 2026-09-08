@@ -28,5 +28,6 @@ class SettingsViewModel: ObservableObject {
         UserDefaults.standard.set(soundEnabled, forKey: AppSettings.soundKey)
         UserDefaults.standard.set(speechEnabled, forKey: AppSettings.speechKey)
         UserDefaults.standard.set(hapticsEnabled, forKey: AppSettings.hapticsKey)
+        NotificationCenter.default.post(name: .appSettingsDidChange, object: nil)
     }
 }
